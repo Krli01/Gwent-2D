@@ -1,4 +1,4 @@
-using System.Collections;
+/*using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -45,4 +45,4 @@ public class ThisCard : MonoBehaviour
         else thisSprite = Resources.Load<Sprite>("DisplaySize_Back");
         thisImage.sprite = thisSprite;
     }
-}
+}*/

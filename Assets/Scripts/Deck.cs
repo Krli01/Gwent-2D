@@ -1,4 +1,4 @@
-using System.Collections;
+/*using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -43,4 +43,4 @@ public class PlayerDeck : MonoBehaviour
         if (deckSize < 1)
             Card1.SetActive(false);
     }
-}
+}*/

@@ -4,90 +4,203 @@ using UnityEngine;
 using UnityEngine.UI;
 [System.Serializable]
 
-public class Card
+public abstract class Card
 {
+    // Functional fields
     public int ID;
-    public int Power;
+    public float Power;
     public string CardName;
-    public Position CardPosition;
-    public string CardEffect;
     public string CardFaction;
+    public string EffectText; //texto del efecto vs efecto en codigo
+    public string CardEffect;
 
+    // Visual fields
     public Sprite CardImage;
+    public Sprite Badge;
+    public Sprite FactionCoat;
+    //public Sprite PowerNum;
 
-    public Card()
-    {
+    // Effect activation method
+    public abstract void Activate();
 
-    }
+}
 
-    public Card(int id, int power, string cardName, Position position, string cardEffect, string faction, Sprite image)
+public class LeaderCard : Card
+{
+    public LeaderCard(int id, float power, string cardName, string effectText, string cardEffect, string faction, Sprite image)
     {
         ID = id;
         Power = power;
         CardName = cardName;
-        CardPosition = position;
+        if (faction == null) throw new System.Exception ("Leader must belong to a faction");
+        //else if () si la faccion no existe lanzar error. Desea crearla?
+        else CardFaction = faction;
+        EffectText = effectText;
         CardEffect = cardEffect;
-        CardFaction = faction;
         CardImage = image;
+        Badge = null;
+        //FactionCoat = poner si faccion existe
     }
 
-    public void Summon()
+    public override void Activate()
     {
-
+        throw new System.NotImplementedException();
     }
-
-    public void Destroy()
-    {
-        
-    }
-
 }
 
-/*public enum Faction
+public abstract class PlayableCard : Card
 {
-    Pirate,
-    Seaborn,
-    Whaler,
-    None
-}*/
+    public abstract void Summon();
+    public abstract void Kill();
+}
+
+public class Unit : PlayableCard
+{
+    public bool Gold;
+    public Position[] CardPosition;
+    public Unit (int id, float power, string cardName, string effectText, string cardEffect, string faction, Sprite image, bool gold, Position[] position)
+    {
+        ID = id;
+        Power = power;
+        CardName = cardName;
+        if (faction == null) throw new System.Exception ("Leader must belong to a faction");
+        //else if () si la faccion no existe lanzar error. Desea crearla?
+        else CardFaction = faction;
+        EffectText = effectText;
+        CardEffect = cardEffect;
+        CardImage = image;
+        Badge = null;
+        //FactionCoat = poner si faccion existe
+        Gold = gold;
+        CardPosition = position;
+    }
+
+     public override void Activate()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public override void Kill()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public override void Summon()
+    {
+        throw new System.NotImplementedException();
+    }
+}
+
+public class Decoy : PlayableCard
+{
+    public Position[] CardPosition;
+    public Decoy (int id, float power, string cardName, string effectText, string cardEffect, string faction, Sprite image, Position[] position)
+    {
+        ID = id;
+        Power = power;
+        CardName = cardName;
+        if (faction == null) throw new System.Exception ("Leader must belong to a faction");
+        //else if () si la faccion no existe lanzar error. Desea crearla?
+        else CardFaction = faction;
+        EffectText = effectText;
+        CardEffect = cardEffect;
+        CardImage = image;
+        Badge = null;
+        //FactionCoat = poner si faccion existe
+        CardPosition = position;
+    }
+
+     public override void Activate()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public override void Kill()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public override void Summon()
+    {
+        throw new System.NotImplementedException();
+    }
+}
+
+public class Booster : PlayableCard
+{
+    public Position[] CardPosition;
+    public Booster (int id, float power, string cardName, string effectText, string cardEffect, string faction, Sprite image, Position[] position)
+    {
+        ID = id;
+        Power = power;
+        CardName = cardName;
+        if (faction == null) throw new System.Exception ("Leader must belong to a faction");
+        //else if () si la faccion no existe lanzar error. Desea crearla?
+        else CardFaction = faction;
+        EffectText = effectText;
+        CardEffect = cardEffect;
+        CardImage = image;
+        Badge = null;
+        //FactionCoat = poner si faccion existe
+        CardPosition = position;
+    }
+
+     public override void Activate()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public override void Kill()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public override void Summon()
+    {
+        throw new System.NotImplementedException();
+    }
+}
 
 public enum Position
 {
     Melee,
     Range,
     Siege,
-    Agile,
-    Weather,
-    Horn,
-    Leader
+    Agile // Melee + Range
 }
 
-/*public class LeaderCard : Card
+public class Weather : PlayableCard
 {
-    public LeaderCard(int id, int power, string cardName, Position position, string cardEffect, Faction faction, Sprite image)
+    public override void Activate()
     {
-        ID = id;
-        Power = power;
-        CardName = cardName;
-        CardPosition = Position.Leader;
-        CardEffect = cardEffect;
-        CardFaction = faction;
-        CardImage = image;
+        throw new System.NotImplementedException();
+    }
+
+    public override void Kill()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public override void Summon()
+    {
+        throw new System.NotImplementedException();
     }
 }
 
-public class UnitCard : Card
+public class Clearing : PlayableCard
 {
-    public bool Gold;
-    public UnitCard(int id, int power, string cardName, Position position, string cardEffect, Faction faction, Sprite image, bool gold)
+     public override void Activate()
     {
-        ID = id;
-        Power = power;
-        CardName = cardName;
-        CardPosition = position;
-        CardEffect = cardEffect;
-        CardFaction = faction;
-        CardImage = image;
-        Gold = gold;
+        throw new System.NotImplementedException();
     }
-}*/
+
+    public override void Kill()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public override void Summon()
+    {
+        throw new System.NotImplementedException();
+    }
+}
