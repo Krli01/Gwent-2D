@@ -16,9 +16,10 @@ public abstract class Card
 
     // Visual fields
     public Sprite CardImage;
-    public Sprite Badge;
+    public Sprite Role;
     public Sprite FactionCoat;
-    //public Sprite PowerNum;
+    public Sprite PowerNum;
+    public Sprite Border;
 
     // Effect activation method
     public abstract void Activate();
@@ -38,7 +39,7 @@ public class LeaderCard : Card
         EffectText = effectText;
         CardEffect = cardEffect;
         CardImage = image;
-        Badge = null;
+        Role = null;
         //FactionCoat = poner si faccion existe
     }
 
@@ -58,7 +59,7 @@ public class Unit : PlayableCard
 {
     public bool Gold;
     public Position[] CardPosition;
-    public Unit (int id, float power, string cardName, string effectText, string cardEffect, string faction, Sprite image, bool gold, Position[] position)
+    public Unit (int id, int power, string cardName, string effectText, string cardEffect, string faction, Sprite image, bool gold, Position[] position)
     {
         ID = id;
         Power = power;
@@ -69,7 +70,7 @@ public class Unit : PlayableCard
         EffectText = effectText;
         CardEffect = cardEffect;
         CardImage = image;
-        Badge = null;
+        Role = null;
         //FactionCoat = poner si faccion existe
         Gold = gold;
         CardPosition = position;
@@ -94,10 +95,10 @@ public class Unit : PlayableCard
 public class Decoy : PlayableCard
 {
     public Position[] CardPosition;
-    public Decoy (int id, float power, string cardName, string effectText, string cardEffect, string faction, Sprite image, Position[] position)
+    public Decoy (int id, string cardName, string effectText, string cardEffect, string faction, Sprite image, Position[] position)
     {
         ID = id;
-        Power = power;
+        Power = 0;
         CardName = cardName;
         if (faction == null) throw new System.Exception ("Leader must belong to a faction");
         //else if () si la faccion no existe lanzar error. Desea crearla?
@@ -105,7 +106,7 @@ public class Decoy : PlayableCard
         EffectText = effectText;
         CardEffect = cardEffect;
         CardImage = image;
-        Badge = null;
+        Role = null;
         //FactionCoat = poner si faccion existe
         CardPosition = position;
     }
@@ -129,10 +130,10 @@ public class Decoy : PlayableCard
 public class Booster : PlayableCard
 {
     public Position[] CardPosition;
-    public Booster (int id, float power, string cardName, string effectText, string cardEffect, string faction, Sprite image, Position[] position)
+    public Booster (int id, string cardName, string effectText, string cardEffect, string faction, Sprite image, Position[] position)
     {
         ID = id;
-        Power = power;
+        Power = 0;
         CardName = cardName;
         if (faction == null) throw new System.Exception ("Leader must belong to a faction");
         //else if () si la faccion no existe lanzar error. Desea crearla?
@@ -140,7 +141,7 @@ public class Booster : PlayableCard
         EffectText = effectText;
         CardEffect = cardEffect;
         CardImage = image;
-        Badge = null;
+        Role = null;
         //FactionCoat = poner si faccion existe
         CardPosition = position;
     }
