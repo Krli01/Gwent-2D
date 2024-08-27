@@ -140,13 +140,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7fb42ff0f925ccb49b9f86808f94f3bb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CardImage: {fileID: 0}
-  FactionCoat: {fileID: 0}
-  Power: {fileID: 0}
-  Border: {fileID: 0}
-  Role: {fileID: 0}
-  CardName: {fileID: 0}
-  EffectText: {fileID: 0}
+  showBack: 0
+  Power: 0
+  CardImage: {fileID: 3377671434553848871}
+  FactionCoat: {fileID: 1831834431407487516}
+  PowerNum: {fileID: 736215352219150053}
+  Border: {fileID: 3383954714300667280}
+  Role: {fileID: 3878187050747914862}
+  CardName: {fileID: 1578681412671133952}
+  EffectText: {fileID: 2805847441373066096}
 --- !u!114 &2593318951217299261
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -16,7 +16,7 @@ public abstract class Card
 
     // Visual fields
     public Sprite CardImage;
-    public Sprite Role;
+    public Sprite CardRole;
     public Sprite FactionCoat;
     public Sprite PowerNum;
     public Sprite Border;
@@ -39,7 +39,6 @@ public class LeaderCard : Card
         EffectText = effectText;
         CardEffect = cardEffect;
         CardImage = image;
-        Role = null;
         //FactionCoat = poner si faccion existe
     }
 
@@ -58,22 +57,26 @@ public abstract class PlayableCard : Card
 public class Unit : PlayableCard
 {
     public bool Gold;
-    public Position[] CardPosition;
-    public Unit (int id, int power, string cardName, string effectText, string cardEffect, string faction, Sprite image, bool gold, Position[] position)
+    public Role thisRole;
+    public Unit (int id, int power, string cardName, string effectText, string cardEffect, string faction, Sprite image, bool gold, Role role)
     {
+        //Functional assignment
         ID = id;
         Power = power;
         CardName = cardName;
-        if (faction == null) throw new System.Exception ("Leader must belong to a faction");
-        //else if () si la faccion no existe lanzar error. Desea crearla?
-        else CardFaction = faction;
         EffectText = effectText;
         CardEffect = cardEffect;
-        CardImage = image;
-        Role = null;
-        //FactionCoat = poner si faccion existe
+        CardFaction = faction;
         Gold = gold;
-        CardPosition = position;
+        thisRole = role;
+
+        //Visuals assignment
+        CardImage = image;
+        CardRole = CardDatabase.roleImages[role];
+        FactionCoat = CardDatabase.factionImages[CardFaction];
+        PowerNum = CardDatabase.powerImages[power];
+        Border = gold ? Resources.Load <Sprite>("Gold") : Resources.Load <Sprite>("Silver");
+
     }
 
      public override void Activate()
@@ -94,21 +97,18 @@ public class Unit : PlayableCard
 
 public class Decoy : PlayableCard
 {
-    public Position[] CardPosition;
-    public Decoy (int id, string cardName, string effectText, string cardEffect, string faction, Sprite image, Position[] position)
+    public Decoy (int id, string cardName, string effectText, string cardEffect, string faction, Sprite image)
     {
         ID = id;
         Power = 0;
         CardName = cardName;
-        if (faction == null) throw new System.Exception ("Leader must belong to a faction");
+        if (faction == null) throw new System.Exception ("Card must belong to a faction");
         //else if () si la faccion no existe lanzar error. Desea crearla?
         else CardFaction = faction;
         EffectText = effectText;
         CardEffect = cardEffect;
         CardImage = image;
-        Role = null;
         //FactionCoat = poner si faccion existe
-        CardPosition = position;
     }
 
      public override void Activate()
@@ -129,21 +129,22 @@ public class Decoy : PlayableCard
 
 public class Booster : PlayableCard
 {
-    public Position[] CardPosition;
-    public Booster (int id, string cardName, string effectText, string cardEffect, string faction, Sprite image, Position[] position)
+    public Booster (int id, string cardName, string effectText, string cardEffect, string faction, Sprite image, Role role)
     {
+        //Functional assignment
         ID = id;
         Power = 0;
         CardName = cardName;
-        if (faction == null) throw new System.Exception ("Leader must belong to a faction");
-        //else if () si la faccion no existe lanzar error. Desea crearla?
-        else CardFaction = faction;
         EffectText = effectText;
         CardEffect = cardEffect;
+        CardFaction = faction;
+        
+        //Visuals assignment
         CardImage = image;
-        Role = null;
-        //FactionCoat = poner si faccion existe
-        CardPosition = position;
+        CardRole = Resources.Load<Sprite> ("role mele");
+        FactionCoat = CardDatabase.factionImages[faction];
+        PowerNum = CardDatabase.powerImages[0];
+        Border = Resources.Load<Sprite> ("Bronze");
     }
 
      public override void Activate()
@@ -162,7 +163,7 @@ public class Booster : PlayableCard
     }
 }
 
-public enum Position
+public enum Role
 {
     Melee,
     Range,

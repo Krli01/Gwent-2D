@@ -4,34 +4,39 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using Unity.VisualScripting;
+using TMPro;
 
 public class GameCard : MonoBehaviour
 {
     public bool showBack;
     public Card thisCard;
     public float Power;
+    
+    //public DisplayCard displayCard;
 
     public Image CardImage;
     public Image FactionCoat;
     public Image PowerNum;
     public Image Border;
     public Image Role;
-    public Text CardName;
-    public Text EffectText;
+    public TextMeshProUGUI CardName;
+    public TextMeshProUGUI EffectText;
 
     //public GameObject Hand;
     
     // Start is called before the first frame update
     void Start()
     {
-        //thisCard = (thisID<10) ? CardDatabase.SeabornDeck[thisID] : CardDatabase.WhalerDeck[thisID-10]; el deck es una pila wiiii
+        
     }
 
     // Update is called once per frame
     void Update()
     {
         if(showBack)
-        {}
+        {
+            //this.Border.sprite = 
+        }
         
         //Hand = GameObject.Find("P1_Hand");
 
@@ -41,13 +46,23 @@ public class GameCard : MonoBehaviour
         FactionCoat.sprite = thisCard.FactionCoat;
         PowerNum.sprite = thisCard.PowerNum;
         Border.sprite = thisCard.Border;
-        Role.sprite = thisCard.Role;
+        Role.sprite = thisCard.CardRole;
         CardName.text = thisCard.CardName;
         EffectText.text = thisCard.EffectText;
 
     }
 
-    public void OnMouseOver()
+    void OnMouseOver()
+    {
+        
+    }
+
+    void OnMouseExit()
+    {
+        //DisplayCard.Reset();
+    }
+
+    public void OnClick()
     {
         
     }
