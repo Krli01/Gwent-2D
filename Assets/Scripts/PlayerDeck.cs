@@ -5,9 +5,7 @@ using UnityEngine;
 public class PlayerDeck : MonoBehaviour
 {
     //Functional
-    public string faction;
     public Stack<Card> Cards;
-    public GameObject Slot;
 
     //Visual
     public GameObject CardInDeck1;
@@ -18,11 +16,15 @@ public class PlayerDeck : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        faction = Game.Player1.faction;
-        Slot = GameObject.Find("Deck1");
+        
+    }
+
+    public void Create(string faction)
+    {
         foreach (Card c in CardDatabase.AvailableDecks[faction])
         {
             Cards.Push(c);
+            System.Console.WriteLine("added 1 card");
         }
     }
 
@@ -42,15 +44,3 @@ public class PlayerDeck : MonoBehaviour
     }
 
 }
-
-//shufflear la lista correcta segun faccion
-        /*int x;
-        int available = CardDatabase.AvailableDecks[faction].Count;
-        if (available-1 < deckSize) throw new System.Exception($"Starting deck must contain {deckSize} cards");
-        
-        for (int i = 0; i < deckSize; i++)
-        {
-            x = Random.Range(1, available);
-            // verificar q el random no haga repeticiones
-            Deck.Push(CardDatabase.AvailableDecks[faction][x]);
-        }*/

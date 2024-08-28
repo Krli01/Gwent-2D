@@ -9,7 +9,6 @@ using TMPro;
 public class GameCard : MonoBehaviour
 {
     public bool showBack;
-    public Card thisCard;
     public float Power;
     
     //public DisplayCard displayCard;
@@ -26,9 +25,21 @@ public class GameCard : MonoBehaviour
     
     // Start is called before the first frame update
     void Start()
-    {
+    { 
         
     }
+
+    public void Assign (Card thisCard)
+    {
+        CardImage.sprite = thisCard.CardImage;
+        FactionCoat.sprite = thisCard.FactionCoat;
+        PowerNum.sprite = thisCard.PowerNum;
+        Border.sprite = thisCard.Border;
+        Role.sprite = thisCard.CardRole;
+        CardName.text = thisCard.CardName;
+        EffectText.text = thisCard.EffectText;
+    }
+    
 
     // Update is called once per frame
     void Update()
@@ -42,13 +53,6 @@ public class GameCard : MonoBehaviour
 
         //if(this.transform.parent == Hand.transform.parent) showBack = false;
         
-        CardImage.sprite = thisCard.CardImage;
-        FactionCoat.sprite = thisCard.FactionCoat;
-        PowerNum.sprite = thisCard.PowerNum;
-        Border.sprite = thisCard.Border;
-        Role.sprite = thisCard.CardRole;
-        CardName.text = thisCard.CardName;
-        EffectText.text = thisCard.EffectText;
 
     }
 

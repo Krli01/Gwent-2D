@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using JetBrains.Annotations;
 using UnityEngine;
 
-public class Player
+public class Player 
 {
     public string Name;
     public string faction;
+    //public GameObject DeckSlot;
     public PlayerDeck Deck;
     public GameObject Hand;
     //public GameObject BoardSection;
@@ -15,21 +16,25 @@ public class Player
     public int RoundsWon;
 
     // Start is called before the first frame update
-    public Player(string name, string f)
+    public Player(string name, string f, string player)
     {
         Name = name;
         faction = f;
-        Deck = new PlayerDeck();
-        Hand = GameObject.Find("P1 Hand");
+        
+        PlayerDeck[] decks = GameObject.FindObjectsOfType<PlayerDeck>();
+        Deck = System.Array.Find(decks, c => c.name == $"{player} Deck");
+        Debug.Log("trying to assign deck");
+        if (Deck != null) Debug.Log("success");
+        
+        Hand = GameObject.Find($"{player} Hand");
         TotalPoints = 0;
         RoundsWon = 0;
-        
     }
 
     public void Draw()
     {
             GameCard current = new GameCard(); 
-            current.thisCard = Deck.Cards.Pop();
+            current.Assign(Deck.Cards.Pop());
             current.transform.SetParent(Hand.transform);
             //Instantiate(current, transform.Role, transform.rotation);
     }

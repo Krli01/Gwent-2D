@@ -33,13 +33,15 @@ public class LeaderCard : Card
         ID = id;
         Power = power;
         CardName = cardName;
-        if (faction == null) throw new System.Exception ("Leader must belong to a faction");
-        //else if () si la faccion no existe lanzar error. Desea crearla?
-        else CardFaction = faction;
+        CardFaction = faction;
         EffectText = effectText;
         CardEffect = cardEffect;
+        
+        
         CardImage = image;
-        //FactionCoat = poner si faccion existe
+        FactionCoat = CardDatabase.factionImages[faction];
+
+        Border = Resources.Load <Sprite>("Gold");
     }
 
     public override void Activate()

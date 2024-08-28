@@ -26,5 +26,4 @@ public class TurnSystem : MonoBehaviour
     {
         Player1Turn = !Player1Turn;
     }
-
 }
