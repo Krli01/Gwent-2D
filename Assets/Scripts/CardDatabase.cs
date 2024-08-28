@@ -5,10 +5,10 @@ using UnityEngine;
 
 public class CardDatabase : MonoBehaviour
 {
-    public static Dictionary<string,List<Card>> AvailableDecks;
-    public List<Card> PirateDeck = new List<Card>();
-    public List<Card> WhalerDeck = new List<Card>();
-    public List<Card> SeabornDeck = new List<Card>();
+    public static Dictionary<string,List<Card>> AvailableDecks = new Dictionary<string, List<Card>>();
+    public static List<Card> PirateDeck = new List<Card>();
+    public static List<Card> WhalerDeck = new List<Card>();
+    public static List<Card> SeabornDeck = new List<Card>();
     
     public static Dictionary<string, Sprite> factionImages = new Dictionary<string, Sprite>();
     public static Dictionary<int, Sprite> powerImages = new Dictionary<int, Sprite>();
@@ -48,8 +48,10 @@ public class CardDatabase : MonoBehaviour
 
         WhalerDeck.Add(new Unit(01, 5, "name whaler", "this is what this card can do", "eff", "Whaler", Resources.Load<Sprite>("img 1"), false, Role.Melee));
 
-        AvailableDecks.Add("Seaborn",SeabornDeck);
-        AvailableDecks.Add("Whaler",WhalerDeck);
+        AvailableDecks.Add("Seaborn", SeabornDeck);
+        AvailableDecks.Add("Whaler", WhalerDeck);
+
+        //foreach (var item in AvailableDecks) Debug.Log($"{item.Key} deck available");
     }
 
 }

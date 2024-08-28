@@ -8,9 +8,9 @@ public class Game : MonoBehaviour
     public static Player Player2;
     public GameObject WeatherZone;
     
-    void Awake()
+    void Start()
     {
-        Debug.Log("started");
+        //Debug.Log("started");
         WeatherZone = GameObject.Find("WeatherZone");
         Player1 = new Player("Player 1", "Seaborn", "P1");
         //Player2 = new Player("Player 2", "Seaborn", "P2");

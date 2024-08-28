@@ -5,7 +5,7 @@ using UnityEngine;
 public class PlayerDeck : MonoBehaviour
 {
     //Functional
-    public Stack<Card> Cards;
+    public Stack<Card> Cards = new Stack<Card>();
 
     //Visual
     public GameObject CardInDeck1;
@@ -24,7 +24,6 @@ public class PlayerDeck : MonoBehaviour
         foreach (Card c in CardDatabase.AvailableDecks[faction])
         {
             Cards.Push(c);
-            System.Console.WriteLine("added 1 card");
         }
     }
 
