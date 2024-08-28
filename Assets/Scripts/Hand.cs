@@ -20,6 +20,11 @@ public class Hand : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
+    }
+
+    public void ArrangeCards()
+    {
         if(CardsInHand < 7) layoutGroup.spacing = 70;
         else if (CardsInHand < 13) layoutGroup.spacing = 60;
         else layoutGroup.spacing = 50;

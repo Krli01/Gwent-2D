@@ -9197,6 +9197,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b6a4e716fcb653343947308122cd13c5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cardPrefab: {fileID: 7283044526100058673, guid: fbe2fdcfbe8e05047a151f864ae95319, type: 3}
   CardInDeck1: {fileID: 1868410712}
   CardInDeck2: {fileID: 1691758459}
   CardInDeck3: {fileID: 1976759106}

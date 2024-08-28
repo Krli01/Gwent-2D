@@ -20,24 +20,30 @@ public class GameCard : MonoBehaviour
     public Image Role;
     public TextMeshProUGUI CardName;
     public TextMeshProUGUI EffectText;
-
-    //public GameObject Hand;
     
     // Start is called before the first frame update
     void Start()
-    { 
-        
+    {
+        CardImage = transform.Find("CardImage")?.GetComponent<Image>();
+        FactionCoat = transform.Find("Faction")?.GetComponent<Image>();
+        PowerNum = transform.Find("Power")?.GetComponent<Image>();
+        Border = transform.Find("Border")?.GetComponent<Image>();
+        Role = transform.Find("Role")?.GetComponent<Image>();
+
+        CardName = transform.Find("Card Name")?.GetComponent<TextMeshProUGUI>();
+        EffectText = transform.Find("Effect Text")?.GetComponent<TextMeshProUGUI>();
     }
 
-    public void Assign (Card thisCard)
+    public void Assign (Card baseCard)
     {
-        CardImage.sprite = thisCard.CardImage;
-        FactionCoat.sprite = thisCard.FactionCoat;
-        PowerNum.sprite = thisCard.PowerNum;
-        Border.sprite = thisCard.Border;
-        Role.sprite = thisCard.CardRole;
-        CardName.text = thisCard.CardName;
-        EffectText.text = thisCard.EffectText;
+        Power = baseCard.Power;
+        CardImage.sprite = baseCard.CardImage;
+        FactionCoat.sprite = baseCard.FactionCoat;
+        PowerNum.sprite = baseCard.PowerNum;
+        Border.sprite = baseCard.Border;
+        Role.sprite = baseCard.CardRole;
+        CardName.text = baseCard.CardName;
+        EffectText.text = baseCard.EffectText;
     }
     
 

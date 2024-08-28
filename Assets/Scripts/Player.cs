@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using JetBrains.Annotations;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Player 
 {
@@ -14,8 +15,7 @@ public class Player
     public float TotalPoints;
     public int RoundsWon;
 
-    public GameCard thisCard;
-
+    public GameCard cardPrefab;
     // Start is called before the first frame update
     public Player(string name, string f, string player)
     {
@@ -39,25 +39,19 @@ public class Player
 
     public IEnumerator DrawCards(int n)
     {
-        yield return new WaitForSeconds(0.2f);
-        
-    }
-    
-    /*public void Draw(Hand hand)
-    { 
-            current.Assign(Cards.Pop());
-            current.transform.SetParent(hand.transform);
-            
-    }
-
-    public IEnumerator DrawCards(Hand hand, int n)
-    {
         for (int i = 0; i < n; i++)
         {
-            yield return new WaitForSeconds(0.2f);
-            //Draw(hand);
-            Instantiate(gameCard, thisHand.transform.position, thisHand.transform.rotation);            
+            if(Deck.Cards.Count > 0)
+            {
+                yield return new WaitForSeconds(0.2f);
+                Card cardData = Deck.Cards.Pop();
+                
+                GameCard newCard = Object.Instantiate(cardPrefab, thisHand.transform.position, thisHand.transform.rotation);
+                newCard.Assign(cardData);
+                newCard.transform.SetParent(thisHand.transform, false);
+                thisHand.ArrangeCards();
+            }
         }
-    }*/
+    }
 
 }

@@ -5,6 +5,7 @@ using UnityEngine;
 public class PlayerDeck : MonoBehaviour
 {
     //Functional
+    public GameCard cardPrefab;
     public Stack<Card> Cards = new Stack<Card>();
 
     //Visual
@@ -26,6 +27,24 @@ public class PlayerDeck : MonoBehaviour
             Cards.Push(c);
         }
     }
+
+    public IEnumerator DrawCards(Hand thisHand, int n)
+    {
+        for (int i = 0; i < n; i++)
+        {
+            if(Cards.Count > 0)
+            {
+                yield return new WaitForSeconds(0.2f);
+                Card cardData = Cards.Pop();
+                
+                GameCard newCard = Object.Instantiate(cardPrefab, thisHand.transform.position, thisHand.transform.rotation);
+                newCard.Assign(cardData);
+                newCard.transform.SetParent(thisHand.transform, false);
+                thisHand.ArrangeCards();
+            }
+        }
+    }
+    
 
     // Update is called once per frame
     void Update()

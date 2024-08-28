@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using UnityEngine;
 
 public class Game : MonoBehaviour
@@ -14,7 +15,7 @@ public class Game : MonoBehaviour
         WeatherZone = GameObject.Find("WeatherZone");
         Player1 = new Player("Player 1", "Seaborn", "P1");
         //Player2 = new Player("Player 2", "Seaborn", "P2");
-        StartCoroutine(Player1.DrawCards(1));
+        StartCoroutine(Player1.Deck.DrawCards(Player1.thisHand, 1));
     }
 
 }
