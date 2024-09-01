@@ -3,3 +3,46 @@
 Power = power <= 11 && power > -1 ? power : throw new System.Exception("Power must be a value between 0 and 11");
 if (faction == null) throw new System.Exception ("Unit must belong to a faction");
 else if () si la faccion no existe lanzar error. Desea crearla?
+
+
+        /*CardSlot[][] Zones;
+
+        // que feo un switch
+        switch (role)
+        {
+            case Role.Mele:
+                Zones = new CardSlot[][] {player.battlefield.MeleRow};
+                break;
+
+            case Role.Range:
+                Zones = new CardSlot[][] {player.battlefield.RangeRow};
+                break;
+
+            case Role.Siege:
+                Zones = new CardSlot[][] {player.battlefield.SiegeRow};
+                break;
+
+            case Role.Agile:
+                Zones = new CardSlot[][] {player.battlefield.MeleRow, player.battlefield.RangeRow};
+                break;
+
+            case Role.Booster or Role.Decoy:
+                Zones = new CardSlot[][] {player.battlefield.MeleRow, player.battlefield.RangeRow, player.battlefield.SiegeRow};
+                break;
+
+            case Role.Weather or Role.Clearing:
+                Zones = new CardSlot[][] {WeatherZone};
+                break;
+
+            default:
+            Zones = null;
+            throw new Exception();
+        }
+
+        foreach (var zone in Zones)
+        {
+            foreach (CardSlot slot in zone)
+            {
+                slot.Available = true;
+            }
+        }*/

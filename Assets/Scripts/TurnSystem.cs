@@ -7,8 +7,9 @@ using UnityEngine.UI;
 public class TurnSystem : MonoBehaviour
 {
     // Start is called before the first frame update
-    public bool Player1Turn;
+    public static bool Player1Turn;
     public TextMeshProUGUI TurnText;
+    static Player Active; 
 
     void Start()
     {
@@ -25,5 +26,11 @@ public class TurnSystem : MonoBehaviour
     public void EndTurn()
     {
         Player1Turn = !Player1Turn;
+    }
+
+    public static Player GetActive()
+    {
+        Active = Player1Turn ? Game.Player1 : Game.Player2;
+        return Active;
     }
 }

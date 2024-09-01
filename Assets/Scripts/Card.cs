@@ -6,15 +6,17 @@ using UnityEngine.UI;
 
 public abstract class Card
 {
-    // Functional fields
     public int ID;
     public float Power;
     public string CardName;
     public string CardFaction;
     public string EffectText; //texto del efecto vs efecto en codigo
     public string CardEffect;
+    public Role thisRole;
 
     // Visual fields
+    public int intPower;
+    public string img;
     public Sprite CardImage;
     public Sprite CardRole;
     public Sprite FactionCoat;
@@ -23,12 +25,11 @@ public abstract class Card
 
     // Effect activation method
     public abstract void Activate();
-
 }
 
 public class LeaderCard : Card
 {
-    public LeaderCard(int id, float power, string cardName, string effectText, string cardEffect, string faction, Sprite image)
+    public LeaderCard(int id, float power, string cardName, string effectText, string cardEffect, string faction, string image)
     {
         ID = id;
         Power = power;
@@ -36,9 +37,9 @@ public class LeaderCard : Card
         CardFaction = faction;
         EffectText = effectText;
         CardEffect = cardEffect;
+        thisRole = Role.Leader;
         
-        
-        CardImage = image;
+        CardImage = Resources.Load<Sprite>(image);
         FactionCoat = CardDatabase.factionImages[faction];
 
         Border = Resources.Load <Sprite>("Gold");
@@ -50,17 +51,10 @@ public class LeaderCard : Card
     }
 }
 
-public abstract class PlayableCard : Card
-{
-    public abstract void Summon();
-    public abstract void Kill();
-}
-
-public class Unit : PlayableCard
+public class Unit : Card
 {
     public bool Gold;
-    public Role thisRole;
-    public Unit (int id, int power, string cardName, string effectText, string cardEffect, string faction, Sprite image, bool gold, Role role)
+    public Unit (int id, int power, string cardName, string effectText, string cardEffect, string faction, string image, bool gold, Role role)
     {
         //Functional assignment
         ID = id;
@@ -73,7 +67,8 @@ public class Unit : PlayableCard
         thisRole = role;
 
         //Visuals assignment
-        CardImage = image;
+        intPower = power;
+        CardImage = Resources.Load<Sprite>(image);
         CardRole = CardDatabase.roleImages[role];
         FactionCoat = CardDatabase.factionImages[CardFaction];
         PowerNum = CardDatabase.powerImages[power];
@@ -85,53 +80,38 @@ public class Unit : PlayableCard
     {
         throw new System.NotImplementedException();
     }
-
-    public override void Kill()
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public override void Summon()
-    {
-        throw new System.NotImplementedException();
-    }
 }
 
-public class Decoy : PlayableCard
+public class Decoy : Card
 {
-    public Decoy (int id, string cardName, string effectText, string cardEffect, string faction, Sprite image)
+    public Decoy (int id, string cardName, string effectText, string cardEffect, string faction, string image)
     {
+        //Functional assignment
         ID = id;
-        Power = 0;
         CardName = cardName;
-        if (faction == null) throw new System.Exception ("Card must belong to a faction");
-        //else if () si la faccion no existe lanzar error. Desea crearla?
-        else CardFaction = faction;
         EffectText = effectText;
         CardEffect = cardEffect;
-        CardImage = image;
-        //FactionCoat = poner si faccion existe
+        CardFaction = faction;
+        img = image;
+
+        //Visuals assignment
+        intPower = 0;
+        CardImage = Resources.Load<Sprite>(image);
+        CardRole = CardDatabase.roleImages[Role.Decoy];
+        FactionCoat = CardDatabase.factionImages[CardFaction];
+        PowerNum = CardDatabase.powerImages[0];
+        Border = Resources.Load<Sprite> ("Bronze");
     }
 
      public override void Activate()
     {
         throw new System.NotImplementedException();
     }
-
-    public override void Kill()
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public override void Summon()
-    {
-        throw new System.NotImplementedException();
-    }
 }
 
-public class Booster : PlayableCard
+public class Booster : Card
 {
-    public Booster (int id, string cardName, string effectText, string cardEffect, string faction, Sprite image, Role role)
+    public Booster (int id, string cardName, string effectText, string cardEffect, string faction, string image)
     {
         //Functional assignment
         ID = id;
@@ -140,10 +120,13 @@ public class Booster : PlayableCard
         EffectText = effectText;
         CardEffect = cardEffect;
         CardFaction = faction;
+        img = image;
+        thisRole = Role.Booster;
         
         //Visuals assignment
-        CardImage = image;
-        CardRole = Resources.Load<Sprite> ("role mele");
+        intPower = 0;
+        CardImage = Resources.Load<Sprite>(image);
+        CardRole = CardDatabase.roleImages[thisRole];
         FactionCoat = CardDatabase.factionImages[faction];
         PowerNum = CardDatabase.powerImages[0];
         Border = Resources.Load<Sprite> ("Bronze");
@@ -154,57 +137,60 @@ public class Booster : PlayableCard
         throw new System.NotImplementedException();
     }
 
-    public override void Kill()
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public override void Summon()
-    {
-        throw new System.NotImplementedException();
-    }
 }
 
 public enum Role
 {
-    Melee,
+    Leader,
+    Mele,
     Range,
     Siege,
-    Agile // Melee + Range
+    Agile, // Mele + Range
+    Booster,
+    Decoy,
+    Weather,
+    Clearing
 }
 
-public class Weather : PlayableCard
+public class Weather : Card
 {
+    public Weather(int id, string cardName, string effectText, string cardEffect, string faction, string image)
+    {
+        //Functional assignment
+        ID = id;
+        Power = 0;
+        CardName = cardName;
+        EffectText = effectText;
+        CardEffect = cardEffect;
+        CardFaction = faction;
+        img = image;
+        thisRole = Role.Weather;
+        
+        //Visuals assignment
+        intPower = 0;
+        CardImage = Resources.Load<Sprite>(image);
+        CardRole = CardDatabase.roleImages[thisRole];
+        FactionCoat = CardDatabase.factionImages[faction];
+        PowerNum = CardDatabase.powerImages[0];
+        Border = Resources.Load<Sprite> ("Bronze");
+    }
     public override void Activate()
     {
         throw new System.NotImplementedException();
     }
 
-    public override void Kill()
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public override void Summon()
-    {
-        throw new System.NotImplementedException();
-    }
 }
 
-public class Clearing : PlayableCard
+public class Clearing : Card
 {
-     public override void Activate()
+    public Clearing(string image)
+    {
+        thisRole = Role.Clearing;
+        img = image;
+    }
+    public override void Activate()
     {
         throw new System.NotImplementedException();
     }
 
-    public override void Kill()
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public override void Summon()
-    {
-        throw new System.NotImplementedException();
-    }
 }

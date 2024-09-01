@@ -17,16 +17,10 @@ public class Hand : MonoBehaviour
         CardsInHand = 10;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
     public void ArrangeCards()
     {
-        if(CardsInHand < 7) layoutGroup.spacing = 70;
-        else if (CardsInHand < 13) layoutGroup.spacing = 60;
-        else layoutGroup.spacing = 50;
+        if(CardsInHand < 7) layoutGroup.spacing = 30;
+        else if (CardsInHand < 13) layoutGroup.spacing = 20;
+        else layoutGroup.spacing = 10;
     }
 }

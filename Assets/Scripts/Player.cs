@@ -10,12 +10,12 @@ public class Player
     public string faction;
     public PlayerDeck Deck;
     public Hand thisHand;
-    //public GameObject BoardSection;
+    public Battlefield battlefield;
     //public GameObject Cemetery;
     public float TotalPoints;
     public int RoundsWon;
+    public bool Passed;
 
-    public GameCard cardPrefab;
     // Start is called before the first frame update
     public Player(string name, string f, string player)
     {
@@ -33,25 +33,28 @@ public class Player
         //Debug.Log("trying to assign hand");
         //if (Deck != null) Debug.Log("success");
 
+        battlefield = new Battlefield(player);
+
         TotalPoints = 0;
         RoundsWon = 0;
+        Passed = false;
     }
+}
 
-    public IEnumerator DrawCards(int n)
+public class Battlefield
+{
+    public CardSlot[] MeleRow;
+    public CardSlot[] RangeRow;
+    public CardSlot[] SiegeRow;
+
+    public Battlefield(string player)
     {
-        for (int i = 0; i < n; i++)
-        {
-            if(Deck.Cards.Count > 0)
-            {
-                yield return new WaitForSeconds(0.2f);
-                Card cardData = Deck.Cards.Pop();
-                
-                GameCard newCard = Object.Instantiate(cardPrefab, thisHand.transform.position, thisHand.transform.rotation);
-                newCard.Assign(cardData);
-                newCard.transform.SetParent(thisHand.transform, false);
-                thisHand.ArrangeCards();
-            }
-        }
-    }
+        GameObject Mele = GameObject.Find($"{player} Mele");
+        GameObject Range = GameObject.Find($"{player} Range");
+        GameObject Siege = GameObject.Find($"{player} Siege");
 
+        MeleRow = Mele.GetComponentsInChildren<CardSlot>();
+        RangeRow = Range.GetComponentsInChildren<CardSlot>();
+        SiegeRow = Siege.GetComponentsInChildren<CardSlot>();
+    }
 }

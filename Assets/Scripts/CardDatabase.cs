@@ -37,16 +37,22 @@ public class CardDatabase : MonoBehaviour
         powerImages.Add(10, Resources.Load<Sprite> ("p10"));
         powerImages.Add(11, Resources.Load<Sprite> ("p11"));
         
-        roleImages.Add(Role.Melee, Resources.Load<Sprite> ("role mele"));
+        roleImages.Add(Role.Mele, Resources.Load<Sprite> ("role mele"));
         roleImages.Add(Role.Agile, Resources.Load<Sprite> ("role agile"));
         roleImages.Add(Role.Range, Resources.Load<Sprite> ("role range"));
         roleImages.Add(Role.Siege, Resources.Load<Sprite> ("role siege"));
+        roleImages.Add(Role.Booster, Resources.Load<Sprite> ("role booster"));
+        roleImages.Add(Role.Decoy, Resources.Load<Sprite> ("role decoy"));
+        roleImages.Add(Role.Weather, Resources.Load<Sprite> ("role weather"));
+        roleImages.Add(Role.Clearing, Resources.Load<Sprite> ("role clearing"));
+        roleImages.Add(Role.Leader, Resources.Load<Sprite> ("role siege"));
         
         //Loading cards
         
-        SeabornDeck.Add(new Unit(00, 3, "name seaborn", "this is what this card can do", "eff", "Seaborn", Resources.Load<Sprite>("img 1"), false, Role.Melee));
+        SeabornDeck.Add(new Unit(00, 3, "name seaborn", "this is what this card can do", "eff", "Seaborn", "img 1", false, Role.Mele));
+        SeabornDeck.Add(new Booster(00, "name seaborn", "this is what this card can do", "eff", "Seaborn", "img 1"));
 
-        WhalerDeck.Add(new Unit(01, 5, "name whaler", "this is what this card can do", "eff", "Whaler", Resources.Load<Sprite>("img 1"), false, Role.Melee));
+        WhalerDeck.Add(new Unit(01, 5, "name whaler", "this is what this card can do", "eff", "Whaler", "img 1", false, Role.Mele));
 
         AvailableDecks.Add("Seaborn", SeabornDeck);
         AvailableDecks.Add("Whaler", WhalerDeck);
