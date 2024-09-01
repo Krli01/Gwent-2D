@@ -11,7 +11,7 @@ public class Player
     public PlayerDeck Deck;
     public Hand thisHand;
     public Battlefield battlefield;
-    //public GameObject Cemetery;
+    public Graveyard graveyard;
     public float TotalPoints;
     public int RoundsWon;
     public bool Passed;
@@ -24,13 +24,18 @@ public class Player
         
         PlayerDeck[] decks = GameObject.FindObjectsOfType<PlayerDeck>();
         Deck = System.Array.Find(decks, c => c.name == $"{player} Deck");
-        //Debug.Log("trying to assign deck");
+        ////Debug.Log($"trying to assign deck to {name}");
         //if (Deck != null) Debug.Log("success");
         Deck.Create(f);
         
         Hand[] hands = GameObject.FindObjectsOfType<Hand>();
         thisHand = System.Array.Find(hands, c => c.name == $"{player} Hand");
-        //Debug.Log("trying to assign hand");
+        //Debug.Log($"trying to assign hand to {name}");
+        //if (Deck != null) Debug.Log("success");
+
+        Graveyard[] graves = GameObject.FindObjectsOfType<Graveyard>();
+        graveyard = System.Array.Find(graves, c => c.name == $"{player} Graveyard");
+        //Debug.Log($"trying to assign graveyard to {name}");
         //if (Deck != null) Debug.Log("success");
 
         battlefield = new Battlefield(player);

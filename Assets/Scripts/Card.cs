@@ -67,6 +67,7 @@ public class Unit : Card
         thisRole = role;
 
         //Visuals assignment
+        img = image;
         intPower = power;
         CardImage = Resources.Load<Sprite>(image);
         CardRole = CardDatabase.roleImages[role];

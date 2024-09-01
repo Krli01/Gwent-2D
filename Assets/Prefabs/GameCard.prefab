@@ -143,6 +143,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   showBack: 0
   Power: 0
+  isSelected: 0
+  role: 0
   CardImage: {fileID: 3377671434553848871}
   FactionCoat: {fileID: 1831834431407487516}
   PowerNum: {fileID: 736215352219150053}
@@ -150,6 +152,7 @@ MonoBehaviour:
   Role: {fileID: 3878187050747914862}
   CardName: {fileID: 1578681412671133952}
   EffectText: {fileID: 2805847441373066096}
+  popUpOnHover: {x: 0, y: 10, z: 0}
 --- !u!114 &2593318951217299261
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -52,7 +52,7 @@ public class CardDatabase : MonoBehaviour
         SeabornDeck.Add(new Unit(00, 3, "name seaborn", "this is what this card can do", "eff", "Seaborn", "img 1", false, Role.Mele));
         SeabornDeck.Add(new Booster(00, "name seaborn", "this is what this card can do", "eff", "Seaborn", "img 1"));
 
-        WhalerDeck.Add(new Unit(01, 5, "name whaler", "this is what this card can do", "eff", "Whaler", "img 1", false, Role.Mele));
+        WhalerDeck.Add(new Unit(01, 5, "name whaler", "this is what this card can do", "eff", "Whaler", "img 1", true, Role.Range));
 
         AvailableDecks.Add("Seaborn", SeabornDeck);
         AvailableDecks.Add("Whaler", WhalerDeck);

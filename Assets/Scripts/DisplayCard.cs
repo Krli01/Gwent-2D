@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using Unity.VisualScripting;
 using TMPro;
+using Unity.Mathematics;
 
 public class DisplayCard : MonoBehaviour
 {
@@ -13,6 +14,7 @@ public class DisplayCard : MonoBehaviour
     public Image PowerNum;
     public Image Border;
     public Image Role;
+    public Image Base;
     public TextMeshProUGUI CardName;
     public TextMeshProUGUI EffectText;
     private static Dictionary<string, Sprite> factionImages = new Dictionary<string, Sprite>();
@@ -29,6 +31,9 @@ public class DisplayCard : MonoBehaviour
         Role = transform.Find("Role")?.GetComponent<Image>();
         CardName = transform.Find("Card Name")?.GetComponent<TextMeshProUGUI>();
         EffectText = transform.Find("Effect Text")?.GetComponent<TextMeshProUGUI>();
+        Base = transform.Find("Base")?.GetComponent<Image>();
+
+        Reset();
 
         roleImages.Add(global::Role.Mele, Resources.Load<Sprite>("DisplayCard/role mele"));
         roleImages.Add(global::Role.Range, Resources.Load<Sprite>("DisplayCard/role range"));
@@ -63,6 +68,13 @@ public class DisplayCard : MonoBehaviour
     }
     public void Show(Card baseCard)
     {
+        CardImage.enabled = true;
+        FactionCoat.enabled = true;
+        PowerNum.enabled = true;
+        Border.enabled = true;
+        Role.enabled = true;
+        Base.enabled = true;
+
         CardImage.sprite = Resources.Load<Sprite>($"DisplayCard/{baseCard.img}");
         FactionCoat.sprite = factionImages[baseCard.CardFaction];
         PowerNum.sprite = powerImages[baseCard.intPower];
@@ -74,13 +86,14 @@ public class DisplayCard : MonoBehaviour
 
     public void Reset()
     {
-    CardImage = null;
-    FactionCoat = null;
-    PowerNum = null;
-    Border = null;
-    Role = null;
-    CardName = null;
-    EffectText = null;
+    CardImage.enabled = false;
+    FactionCoat.enabled = false;
+    PowerNum.enabled = false;
+    Border.enabled = false;
+    Role.enabled = false;
+    Base.enabled = false;
+    CardName.text = "";
+    EffectText.text = "";
     }
 
 }

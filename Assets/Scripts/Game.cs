@@ -21,8 +21,9 @@ public class Game : MonoBehaviour
         displayCard = FindObjectOfType<DisplayCard>();
         WeatherZone = weatherZone.GetComponentsInChildren<CardSlot>();
         Player1 = new Player("Player 1", "Seaborn", "P1");
-        //Player2 = new Player("Player 2", "Whaler", "P2");
+        Player2 = new Player("Player 2", "Whaler", "P2");
         StartCoroutine(Player1.Deck.DrawCards(Player1.thisHand, 2));
+        StartCoroutine(Player2.Deck.DrawCards(Player2.thisHand, 1));
     }
 
     public static void EnableZone(Player player, Role role)

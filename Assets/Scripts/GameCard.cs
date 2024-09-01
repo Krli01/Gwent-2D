@@ -83,7 +83,7 @@ public class GameCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
             transform.position -= popUpOnHover;    
         }
 
-        //Game.displayCard.Reset();
+        if (!isSelected) Game.displayCard.Reset();
     }
 
     public void OnPointerClick(PointerEventData eventData)

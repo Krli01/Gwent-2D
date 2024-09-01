@@ -34,9 +34,9 @@ public class PlayerDeck : MonoBehaviour
         {
             if(Cards.Count > 0)
             {
-                yield return new WaitForSeconds(0.2f);
+                yield return new WaitForSeconds(0.4f);
                 Card cardData = Cards.Pop();
-                
+
                 GameCard newCard = Object.Instantiate(cardPrefab, thisHand.transform.position, thisHand.transform.rotation);
                 newCard.Assign(cardData);
                 newCard.transform.SetParent(thisHand.transform, false);
