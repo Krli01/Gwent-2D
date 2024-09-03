@@ -38,6 +38,10 @@ public class PlayerDeck : MonoBehaviour
                 Card cardData = Cards.Pop();
 
                 GameCard newCard = Object.Instantiate(cardPrefab, thisHand.transform.position, thisHand.transform.rotation);
+                if (thisHand.transform != TurnSystem.GetActive().thisHand.transform)
+                {
+                    newCard.showBack = true;
+                }
                 newCard.Assign(cardData);
                 newCard.transform.SetParent(thisHand.transform, false);
                 thisHand.ArrangeCards();

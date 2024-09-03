@@ -29,20 +29,27 @@ public abstract class Card
 
 public class LeaderCard : Card
 {
+    public bool Activated {get; set;}
     public LeaderCard(int id, float power, string cardName, string effectText, string cardEffect, string faction, string image)
     {
+        //Functional assignment
         ID = id;
-        Power = power;
+        Power = 0;
         CardName = cardName;
-        CardFaction = faction;
         EffectText = effectText;
         CardEffect = cardEffect;
+        CardFaction = faction;
+        img = image;
         thisRole = Role.Leader;
+        Activated = false;
         
+        //Visuals assignment
+        intPower = 0;
         CardImage = Resources.Load<Sprite>(image);
+        CardRole = CardDatabase.roleImages[thisRole];
         FactionCoat = CardDatabase.factionImages[faction];
-
-        Border = Resources.Load <Sprite>("Gold");
+        PowerNum = CardDatabase.powerImages[0];
+        Border = Resources.Load<Sprite> ("Gold");
     }
 
     public override void Activate()
@@ -89,16 +96,18 @@ public class Decoy : Card
     {
         //Functional assignment
         ID = id;
+        Power = 0;
         CardName = cardName;
         EffectText = effectText;
         CardEffect = cardEffect;
         CardFaction = faction;
         img = image;
+        thisRole = Role.Decoy;
 
         //Visuals assignment
         intPower = 0;
         CardImage = Resources.Load<Sprite>(image);
-        CardRole = CardDatabase.roleImages[Role.Decoy];
+        CardRole = CardDatabase.roleImages[thisRole];
         FactionCoat = CardDatabase.factionImages[CardFaction];
         PowerNum = CardDatabase.powerImages[0];
         Border = Resources.Load<Sprite> ("Bronze");
@@ -116,7 +125,7 @@ public class Booster : Card
     {
         //Functional assignment
         ID = id;
-        Power = 0;
+        Power = 1;
         CardName = cardName;
         EffectText = effectText;
         CardEffect = cardEffect;
@@ -125,11 +134,11 @@ public class Booster : Card
         thisRole = Role.Booster;
         
         //Visuals assignment
-        intPower = 0;
+        intPower = 1;
         CardImage = Resources.Load<Sprite>(image);
         CardRole = CardDatabase.roleImages[thisRole];
         FactionCoat = CardDatabase.factionImages[faction];
-        PowerNum = CardDatabase.powerImages[0];
+        PowerNum = CardDatabase.powerImages[1];
         Border = Resources.Load<Sprite> ("Bronze");
     }
 
@@ -172,7 +181,7 @@ public class Weather : Card
         CardImage = Resources.Load<Sprite>(image);
         CardRole = CardDatabase.roleImages[thisRole];
         FactionCoat = CardDatabase.factionImages[faction];
-        PowerNum = CardDatabase.powerImages[0];
+        PowerNum = null;
         Border = Resources.Load<Sprite> ("Bronze");
     }
     public override void Activate()
@@ -184,10 +193,25 @@ public class Weather : Card
 
 public class Clearing : Card
 {
-    public Clearing(string image)
+    public Clearing(int id, string cardName, string effectText, string cardEffect, string faction, string image)
     {
-        thisRole = Role.Clearing;
+        //Functional assignment
+        ID = id;
+        Power = 0;
+        CardName = cardName;
+        EffectText = effectText;
+        CardEffect = cardEffect;
+        CardFaction = faction;
         img = image;
+        thisRole = Role.Clearing;
+        
+        //Visuals assignment
+        intPower = 0;
+        CardImage = Resources.Load<Sprite>(image);
+        CardRole = CardDatabase.roleImages[thisRole];
+        FactionCoat = CardDatabase.factionImages[faction];
+        PowerNum = null;
+        Border = Resources.Load<Sprite> ("Bronze");
     }
     public override void Activate()
     {

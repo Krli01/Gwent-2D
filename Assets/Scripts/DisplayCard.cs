@@ -70,7 +70,7 @@ public class DisplayCard : MonoBehaviour
     {
         CardImage.enabled = true;
         FactionCoat.enabled = true;
-        PowerNum.enabled = true;
+        if(baseCard.PowerNum != null) PowerNum.enabled = true;
         Border.enabled = true;
         Role.enabled = true;
         Base.enabled = true;
@@ -86,14 +86,14 @@ public class DisplayCard : MonoBehaviour
 
     public void Reset()
     {
-    CardImage.enabled = false;
-    FactionCoat.enabled = false;
-    PowerNum.enabled = false;
-    Border.enabled = false;
-    Role.enabled = false;
-    Base.enabled = false;
-    CardName.text = "";
-    EffectText.text = "";
+        CardImage.enabled = false;
+        FactionCoat.enabled = false;
+        PowerNum.enabled = false;
+        Border.enabled = false;
+        Role.enabled = false;
+        Base.enabled = false;
+        CardName.text = "";
+        EffectText.text = "";
     }
 
 }

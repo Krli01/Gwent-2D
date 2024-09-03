@@ -12,14 +12,13 @@ public class GameCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     public float Power;
     public bool isSelected;
     public Role role;
-    
-    //public DisplayCard displayCard;
 
     public Image CardImage;
     public Image FactionCoat;
     public Image PowerNum;
     public Image Border;
     public Image Role;
+    public Image CardBack;
     public TextMeshProUGUI CardName;
     public TextMeshProUGUI EffectText;
     private Card BaseCard;
@@ -34,9 +33,11 @@ public class GameCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         PowerNum = transform.Find("Power")?.GetComponent<Image>();
         Border = transform.Find("Border")?.GetComponent<Image>();
         Role = transform.Find("Role")?.GetComponent<Image>();
+        CardBack = transform.Find("CardBack")?.GetComponent<Image>();
         CardName = transform.Find("Card Name")?.GetComponent<TextMeshProUGUI>();
         EffectText = transform.Find("Effect Text")?.GetComponent<TextMeshProUGUI>();
         isSelected = false;
+        CardBack.enabled = false;
     }
 
     public void Assign (Card baseCard)
@@ -44,7 +45,8 @@ public class GameCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         Power = baseCard.Power;
         CardImage.sprite = Resources.Load<Sprite>($"{baseCard.img}");
         FactionCoat.sprite = baseCard.FactionCoat;
-        PowerNum.sprite = baseCard.PowerNum;
+        if(baseCard.PowerNum != null) PowerNum.sprite = baseCard.PowerNum;
+        else PowerNum.enabled = false;
         Border.sprite = baseCard.Border;
         Role.sprite = baseCard.CardRole;
         CardName.text = baseCard.CardName;
@@ -57,11 +59,7 @@ public class GameCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     // Update is called once per frame
     void Update()
     {
-        if(!showBack)
-        {
-            //this.Border.sprite = 
-        }
-        
+        CardBack.enabled = showBack ? true : false;      
     }
 
     public void OnPointerEnter(PointerEventData eventData)
@@ -72,7 +70,7 @@ public class GameCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
             transform.position += popUpOnHover;
         }
 
-        Game.displayCard.Show(BaseCard);
+        if(!showBack) Game.displayCard.Show(BaseCard);
     }
 
     public void OnPointerExit(PointerEventData eventData)
@@ -83,14 +81,23 @@ public class GameCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
             transform.position -= popUpOnHover;    
         }
 
-        if (!isSelected) Game.displayCard.Reset();
+        if (!isSelected) 
+        {
+            if(Game.Selected.Count == 0) Game.displayCard.Reset();
+            else Game.displayCard.Show(Game.Selected[0].BaseCard);
+        }
+
     }
 
     public void OnPointerClick(PointerEventData eventData)
     {
         //Debug.Log("clicked");
+        if (role == global::Role.Leader)
+        {
+            //enablear boton de activar habilidad
+        }
         
-        if (transform.parent == TurnSystem.GetActive().thisHand.transform)
+        else if (transform.parent == TurnSystem.GetActive().thisHand.transform)
         {
             if(Game.Selected.Contains(this)) 
             {
@@ -112,6 +119,33 @@ public class GameCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
                 Game.Selected.Add(this);
                 Game.EnableZone(TurnSystem.GetActive(), role);
                 //Debug.Log("Selected");
+            }
+        }
+
+        else if (Game.Selected.Count > 0)
+        {
+            if (BaseCard is Weather && Game.Selected[0].role == global::Role.Clearing)
+            {
+                //substitute and eliminate weather card
+                Transform t = transform.parent;
+                TurnSystem.GetActive().graveyard.Cards.Add(BaseCard);
+                transform.SetParent(null);
+                GameCard card = Game.Selected[0];
+                card.transform.SetParent(t);
+                card.transform.localPosition = Vector3.zero;            
+                Game.Selected.Clear();
+                Destroy(this);
+            }
+            if (BaseCard is Unit && Game.Selected[0].role == global::Role.Decoy)
+            {
+                Transform hand = TurnSystem.GetActive().thisHand.transform;
+                Transform t = transform.parent;
+                transform.SetParent(hand);
+                GameCard card = Game.Selected[0];
+                card.transform.SetParent(t);
+                card.isSelected = false;
+                card.transform.localPosition = Vector3.zero;            
+                Game.Selected.Clear();
             }
         }
         

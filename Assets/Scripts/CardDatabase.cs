@@ -49,8 +49,14 @@ public class CardDatabase : MonoBehaviour
         
         //Loading cards
         
-        SeabornDeck.Add(new Unit(00, 3, "name seaborn", "this is what this card can do", "eff", "Seaborn", "img 1", false, Role.Mele));
+        SeabornDeck.Add(new Unit(00, 3, "name seaborn", "this is what this card can do", "eff", "Seaborn", "img 1", false, Role.Siege));
+        SeabornDeck.Add(new Unit(00, 4, "name seaborn", "this is what this card can do", "eff", "Seaborn", "img 1", false, Role.Range));
+        SeabornDeck.Add(new Unit(00, 2, "name seaborn", "this is what this card can do", "eff", "Seaborn", "img 1", false, Role.Agile));
+        SeabornDeck.Add(new Unit(00, 9, "name seaborn", "this is what this card can do", "eff", "Seaborn", "img 1", true, Role.Mele));
         SeabornDeck.Add(new Booster(00, "name seaborn", "this is what this card can do", "eff", "Seaborn", "img 1"));
+        SeabornDeck.Add(new Decoy(00, "name seaborn", "this is what this card can do", "eff", "Seaborn", "img 1"));
+        SeabornDeck.Add(new Weather(00, "name seaborn", "this is what this card can do", "eff", "Seaborn", "img 1"));
+        SeabornDeck.Add(new Clearing(00, "name seaborn", "this is what this card can do", "eff", "Seaborn", "img 1"));
 
         WhalerDeck.Add(new Unit(01, 5, "name whaler", "this is what this card can do", "eff", "Whaler", "img 1", true, Role.Range));
 
