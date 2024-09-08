@@ -10,6 +10,7 @@ public class Game : MonoBehaviour
 {
     public static Player Player1;
     public static Player Player2;
+    static Player Winner;
     public static CardSlot[] WeatherZone;
     public static DisplayCard displayCard;
     
@@ -23,6 +24,7 @@ public class Game : MonoBehaviour
         WeatherZone = weatherZone.GetComponentsInChildren<CardSlot>();
         Player1 = new Player("Player 1", "Seaborn", "P1");
         Player2 = new Player("Player 2", "Whaler", "P2");
+        RoundSystem.StartRound(Player1);
         StartCoroutine(Player1.Deck.DrawCards(Player1.thisHand, 8));
         StartCoroutine(Player2.Deck.DrawCards(Player2.thisHand, 1));
     }
@@ -163,6 +165,20 @@ public class Game : MonoBehaviour
             }
         }
         //Debug.Log("All zonesdisabled");
+    }
+
+    public static void SetWinner(Player player)
+    {
+        if (player == null)
+        {
+            // Tie
+            Debug.Log("tie");
+        }
+        else 
+        {
+            Winner = player;
+            Debug.Log($"{player.Name} wins");
+        }
     }
 
 }

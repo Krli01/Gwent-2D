@@ -12,6 +12,7 @@ public class Player
     public Hand thisHand;
     public Battlefield battlefield;
     public Graveyard graveyard;
+    public float RoundPoints;
     public float TotalPoints;
     public int RoundsWon;
     public bool Passed;
@@ -40,6 +41,7 @@ public class Player
 
         battlefield = new Battlefield(player);
 
+        RoundPoints = 0;
         TotalPoints = 0;
         RoundsWon = 0;
         Passed = false;

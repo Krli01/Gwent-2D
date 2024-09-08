@@ -10,6 +10,7 @@ public class GameCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     public bool showBack;
     public float Power;
+    //private float PowerExtra;
     public bool isSelected;
     public Role role;
 
@@ -65,7 +66,7 @@ public class GameCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     public void OnPointerEnter(PointerEventData eventData)
     {
         //Debug.Log("enter");
-        if (transform.parent == TurnSystem.GetActive().thisHand.transform && !isSelected)
+        if (transform.parent == TurnSystem.Active.thisHand.transform && !isSelected)
         {
             transform.position += popUpOnHover;
         }
@@ -76,7 +77,7 @@ public class GameCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     public void OnPointerExit(PointerEventData eventData)
     {
         //Debug.Log("exit");
-        if (transform.parent == TurnSystem.GetActive().thisHand.transform && !isSelected)
+        if (transform.parent == TurnSystem.Active.thisHand.transform && !isSelected)
         {
             transform.position -= popUpOnHover;    
         }
@@ -97,12 +98,12 @@ public class GameCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
             //enablear boton de activar habilidad
         }
         
-        else if (transform.parent == TurnSystem.GetActive().thisHand.transform)
+        else if (transform.parent == TurnSystem.Active.thisHand.transform)
         {
             if(Game.Selected.Contains(this)) 
             {
                 Game.Selected.Remove(this);
-                Game.DisableAllZones(TurnSystem.GetActive());
+                Game.DisableAllZones(TurnSystem.Active);
                 //Debug.Log("De-Selected");
             }
             else if (Game.Selected.Count > 0)
@@ -111,34 +112,37 @@ public class GameCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
                 Game.Selected[0].transform.position -= popUpOnHover;            
                 Game.Selected.Clear();
                 Game.Selected.Add(this);
-                Game.EnableZone(TurnSystem.GetActive(), role);
+                if (!TurnSystem.ActionTaken) Game.EnableZone(TurnSystem.Active, role);
                 //Debug.Log("Selected");
             }
             else
             {
                 Game.Selected.Add(this);
-                Game.EnableZone(TurnSystem.GetActive(), role);
+                if (!TurnSystem.ActionTaken) Game.EnableZone(TurnSystem.Active, role);
                 //Debug.Log("Selected");
             }
         }
 
         else if (Game.Selected.Count > 0)
         {
+            if(TurnSystem.ActionTaken) return;
+
             if (BaseCard is Weather && Game.Selected[0].role == global::Role.Clearing)
             {
                 //substitute and eliminate weather card
                 Transform t = transform.parent;
-                TurnSystem.GetActive().graveyard.Cards.Add(BaseCard);
+                TurnSystem.Active.graveyard.Cards.Add(BaseCard);
                 transform.SetParent(null);
                 GameCard card = Game.Selected[0];
                 card.transform.SetParent(t);
                 card.transform.localPosition = Vector3.zero;            
                 Game.Selected.Clear();
+                TurnSystem.ActionTaken = true;
                 Destroy(this);
             }
-            if (BaseCard is Unit && Game.Selected[0].role == global::Role.Decoy)
+            else if (BaseCard is Unit && Game.Selected[0].role == global::Role.Decoy)
             {
-                Transform hand = TurnSystem.GetActive().thisHand.transform;
+                Transform hand = TurnSystem.Active.thisHand.transform;
                 Transform t = transform.parent;
                 transform.SetParent(hand);
                 GameCard card = Game.Selected[0];
@@ -146,11 +150,13 @@ public class GameCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
                 card.isSelected = false;
                 card.transform.localPosition = Vector3.zero;            
                 Game.Selected.Clear();
+                TurnSystem.ActionTaken = true;
             }
         }
         
         isSelected = !isSelected;
         //Debug.Log(isSelected);
+        Debug.Log($"Active player: {TurnSystem.Active.Name}");
     }
 
 }

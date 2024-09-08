@@ -26,7 +26,7 @@ public class CardSlot : MonoBehaviour, IPointerClickHandler, IPointerEnterHandle
                 selectedCard.isSelected = false;
                 selectedCard.transform.localPosition = Vector3.zero;
                 Game.Selected.RemoveAt(0);
-                if (this.transform.childCount > 0) Game.DisableAllZones(TurnSystem.GetActive());
+                if (this.transform.childCount > 0) Game.DisableAllZones(TurnSystem.Active);
                 TurnSystem.ActionTaken = true;
                 //Debug.Log($"Card placed in slot: {selectedCard.name}");
             }

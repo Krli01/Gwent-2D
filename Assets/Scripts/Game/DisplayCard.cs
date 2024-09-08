@@ -12,11 +12,13 @@ public class DisplayCard : MonoBehaviour
     public Image CardImage;
     public Image FactionCoat;
     public Image PowerNum;
+    public Image PowerExtra;
     public Image Border;
     public Image Role;
     public Image Base;
     public TextMeshProUGUI CardName;
     public TextMeshProUGUI EffectText;
+    public TextMeshProUGUI powerExtra;
     private static Dictionary<string, Sprite> factionImages = new Dictionary<string, Sprite>();
     private static Dictionary<int, Sprite> powerImages = new Dictionary<int, Sprite>();
     private static Dictionary<Role, Sprite> roleImages = new Dictionary<Role, Sprite>();
@@ -27,6 +29,8 @@ public class DisplayCard : MonoBehaviour
         CardImage = transform.Find("CardImage")?.GetComponent<Image>();
         FactionCoat = transform.Find("Faction")?.GetComponent<Image>();
         PowerNum = transform.Find("Power")?.GetComponent<Image>();
+        PowerExtra = transform.Find("Power extra")?.GetComponent<Image>();
+        powerExtra = PowerExtra.GetComponentInChildren<TextMeshProUGUI>();
         Border = transform.Find("Border")?.GetComponent<Image>();
         Role = transform.Find("Role")?.GetComponent<Image>();
         CardName = transform.Find("Card Name")?.GetComponent<TextMeshProUGUI>();
@@ -74,6 +78,7 @@ public class DisplayCard : MonoBehaviour
         Border.enabled = true;
         Role.enabled = true;
         Base.enabled = true;
+        if(powerExtra.text != "") PowerExtra.enabled = true;
 
         CardImage.sprite = Resources.Load<Sprite>($"DisplayCard/{baseCard.img}");
         FactionCoat.sprite = factionImages[baseCard.CardFaction];
@@ -92,8 +97,10 @@ public class DisplayCard : MonoBehaviour
         Border.enabled = false;
         Role.enabled = false;
         Base.enabled = false;
+        PowerExtra.enabled = false;
         CardName.text = "";
         EffectText.text = "";
+        powerExtra.text = "";
     }
 
 }
