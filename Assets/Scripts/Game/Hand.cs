@@ -13,14 +13,13 @@ public class Hand : MonoBehaviour
     void Start()
     {
         layoutGroup = (HorizontalLayoutGroup)this.GetComponent("HorizontalLayoutGroup");
-        layoutGroup.spacing = 60;
+        layoutGroup.spacing = 15;
         CardsInHand = 10;
     }
 
-    /*public void ArrangeCards()
+    public void ArrangeCards()
     {
-        if(CardsInHand < 7) layoutGroup.spacing = 30;
-        else if (CardsInHand < 13) layoutGroup.spacing = 20;
-        else layoutGroup.spacing = 10;
-    }*/
+        if(CardsInHand < 9) layoutGroup.spacing = 20;
+        else layoutGroup.spacing = 15;
+    }
 }

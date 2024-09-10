@@ -5,9 +5,14 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using Unity.VisualScripting;
 using TMPro;
+using System.Linq;
 
 public class GameCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
 {
+    public GameObject prefab;
+    public Card BaseCard {get; private set;}
+    public Player Owner {get; private set;}
+
     public bool showBack;
     public float Power;
     //private float PowerExtra;
@@ -22,7 +27,6 @@ public class GameCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     public Image CardBack;
     public TextMeshProUGUI CardName;
     public TextMeshProUGUI EffectText;
-    private Card BaseCard;
 
     public Vector3 popUpOnHover = new (0, 10, 0);
     
@@ -38,7 +42,11 @@ public class GameCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         CardName = transform.Find("Card Name")?.GetComponent<TextMeshProUGUI>();
         EffectText = transform.Find("Effect Text")?.GetComponent<TextMeshProUGUI>();
         isSelected = false;
-        CardBack.enabled = false;
+    }
+
+    public void SetOwner(Player owner)
+    {
+        Owner = owner;
     }
 
     public void Assign (Card baseCard)
@@ -56,12 +64,12 @@ public class GameCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         BaseCard = baseCard;
     }
     
-
     // Update is called once per frame
     void Update()
     {
         CardBack.enabled = showBack ? true : false;      
     }
+
 
     public void OnPointerEnter(PointerEventData eventData)
     {
@@ -92,7 +100,8 @@ public class GameCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        //Debug.Log("clicked");
+        if (showBack) return;
+        
         if (role == global::Role.Leader)
         {
             //enablear boton de activar habilidad
@@ -102,61 +111,90 @@ public class GameCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         {
             if(Game.Selected.Contains(this)) 
             {
-                Game.Selected.Remove(this);
+                DeSelect(this);
                 Game.DisableAllZones(TurnSystem.Active);
-                //Debug.Log("De-Selected");
-            }
-            else if (Game.Selected.Count > 0)
-            {
-                Game.Selected[0].isSelected = false;
-                Game.Selected[0].transform.position -= popUpOnHover;            
-                Game.Selected.Clear();
-                Game.Selected.Add(this);
-                if (!TurnSystem.ActionTaken) Game.EnableZone(TurnSystem.Active, role);
-                //Debug.Log("Selected");
             }
             else
             {
-                Game.Selected.Add(this);
-                if (!TurnSystem.ActionTaken) Game.EnableZone(TurnSystem.Active, role);
-                //Debug.Log("Selected");
+                Select(this);
+                if (!TurnSystem.ActionTaken) Game.EnableZone(Owner, role);
             }
         }
 
         else if (Game.Selected.Count > 0)
         {
-            if(TurnSystem.ActionTaken) return;
-
-            if (BaseCard is Weather && Game.Selected[0].role == global::Role.Clearing)
+            if(TurnSystem.ActionTaken)
             {
-                //substitute and eliminate weather card
-                Transform t = transform.parent;
-                TurnSystem.Active.graveyard.Cards.Add(BaseCard);
-                transform.SetParent(null);
-                GameCard card = Game.Selected[0];
-                card.transform.SetParent(t);
-                card.transform.localPosition = Vector3.zero;            
-                Game.Selected.Clear();
-                TurnSystem.ActionTaken = true;
-                Destroy(this);
-            }
+                if (Game.Selected.Contains(this)) DeSelect(this);
+                else Select(this);
+                return;
+            } 
+
+            if (BaseCard is Weather && Game.Selected[0].role == global::Role.Clearing) ClearWeather();
+
             else if (BaseCard is Unit && Game.Selected[0].role == global::Role.Decoy)
             {
-                Transform hand = TurnSystem.Active.thisHand.transform;
-                Transform t = transform.parent;
-                transform.SetParent(hand);
-                GameCard card = Game.Selected[0];
-                card.transform.SetParent(t);
-                card.isSelected = false;
-                card.transform.localPosition = Vector3.zero;            
-                Game.Selected.Clear();
-                TurnSystem.ActionTaken = true;
+                if (Owner.Name == Game.Selected[0].Owner.Name) ReturnToHand();
+            }
+        }
+
+        else
+            {
+                if (Game.Selected.Contains(this)) DeSelect(this);
+                else Select(this);
+            }
+    }
+
+    void Select(GameCard card)
+    {
+        // only 1 card can be selected
+        if (Game.Selected.Count > 0)
+        {
+            for (int i = 0; i < Game.Selected.Count; i++)
+            {
+                GameCard c = Game.Selected[i];
+                DeSelect(c);
             }
         }
         
-        isSelected = !isSelected;
-        //Debug.Log(isSelected);
-        Debug.Log($"Active player: {TurnSystem.Active.Name}");
+        card.isSelected = true;
+        Game.Selected.Add(card);
+        Debug.Log("Selected");
     }
 
+    public void DeSelect(GameCard card)
+    {
+        card.isSelected = false;
+        if (card.gameObject != this.gameObject && card.transform.parent == TurnSystem.Active.thisHand.transform) card.transform.position -= popUpOnHover;
+        Game.Selected.Remove(card);
+        Debug.Log("De-Selected");
+    }
+
+    void ClearWeather()
+    {
+        Transform t = transform.parent;
+        transform.SetParent(null);
+        GameCard clearingCard = Game.Selected[0];
+        clearingCard.transform.SetParent(t);
+        clearingCard.transform.localPosition = Vector3.zero;            
+        Game.Selected.Clear();
+        TurnSystem.ActionTaken = true;
+                
+        //fix visual bug: clearingCard must be killed after 0.7s delay
+        Owner.graveyard.SendToGraveyard(this);
+        clearingCard.Owner.graveyard.SendToGraveyard(clearingCard);
+    }
+
+    void ReturnToHand()
+    {
+        Transform hand = TurnSystem.Active.thisHand.transform;
+        Transform t = transform.parent;
+        transform.SetParent(hand);
+        GameCard card = Game.Selected[0];
+        card.transform.SetParent(t);
+        card.isSelected = false;                    
+        card.transform.localPosition = Vector3.zero;            
+        Game.Selected.Clear();
+        TurnSystem.ActionTaken = true;
+    }
 }

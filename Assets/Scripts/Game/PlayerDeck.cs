@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class PlayerDeck : MonoBehaviour
 {
@@ -9,60 +11,97 @@ public class PlayerDeck : MonoBehaviour
     public Stack<Card> Cards = new Stack<Card>();
 
     //Visual
-    public GameObject CardInDeck1;
-    public GameObject CardInDeck2;
-    public GameObject CardInDeck3;
-    public GameObject CardInDeck4;
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    public GameCard CardInDeck1;
+    public GameCard CardInDeck2;
+    public GameCard CardInDeck3;
+    public GameCard CardInDeck4;
 
     public void Create(string faction)
     {
-        foreach (Card c in CardDatabase.AvailableDecks[faction])
+        /*int x;
+        int index;
+        while(Cards.Count < 30)
         {
-            Cards.Push(c);
-        }
+            x = Random.Range(0,2);
+            if (x == 0)
+            {
+                List<Card> factionList = CardDatabase.AvailableDecks[faction];
+                index = Random.Range(0, factionList.Count);
+                Card nextCard = factionList[index];
+                if (nextCard.instancesLeft > 0) 
+                {
+                    Cards.Push(factionList[index]);
+                    nextCard.instancesLeft--;
+                    //Debug.Log($"{nextCard.CardName}: pushed");
+                }
+            }
+            else
+            {
+                List<Card> factionList = CardDatabase.AvailableDecks["Neutral"];
+                index = Random.Range(0, factionList.Count);
+                Card nextCard = factionList[index];
+                if (nextCard.instancesLeft > 0)
+                {
+                    Cards.Push(factionList[index]);
+                    nextCard.instancesLeft--;
+                    //Debug.Log($"{nextCard.CardName}: pushed");
+                }
+            }
+        }*/
+
+        foreach (Card c in CardDatabase.AvailableDecks[faction]) Cards.Push(c);
     }
 
-    public IEnumerator DrawCards(Hand thisHand, int n)
+    public IEnumerator DrawCards(Player owner, int n)
     {
+
         for (int i = 0; i < n; i++)
         {
+            int cardsInHand = owner.thisHand.transform.childCount;
+
             if(Cards.Count > 0)
             {
                 yield return new WaitForSeconds(0.35f);
                 Card cardData = Cards.Pop();
 
-                GameCard newCard = Object.Instantiate(cardPrefab, thisHand.transform.position, thisHand.transform.rotation);
-                if (thisHand.transform != TurnSystem.Active.thisHand.transform)
+                if (cardsInHand < 10)
                 {
-                    newCard.showBack = true;
+                    GameCard newCard = Object.Instantiate(cardPrefab, owner.thisHand.transform.position, owner.thisHand.transform.rotation);
+                    newCard.SetOwner(owner);
+                    if (owner.thisHand.transform != TurnSystem.Active.thisHand.transform)
+                    {
+                        newCard.showBack = true;
+                    }
+                    newCard.Assign(cardData);
+                    newCard.transform.SetParent(owner.thisHand.transform, false);
+                    owner.thisHand.ArrangeCards();
                 }
-                newCard.Assign(cardData);
-                newCard.transform.SetParent(thisHand.transform, false);
-                //thisHand.ArrangeCards();
+                else
+                {
+                    GameCard newCard = Object.Instantiate(cardPrefab, owner.overflow.transform.position, owner.overflow.transform.rotation);
+                    newCard.SetOwner(owner);
+                    newCard.Assign(cardData);
+                    newCard.transform.SetParent(owner.overflow.transform, false);
+                    newCard.transform.localPosition = Vector3.zero;
+                    yield return new WaitForSeconds(0.8f);
+                    owner.graveyard.SendToGraveyard(newCard);
+                }
             }
         }
     }
-    
 
-    // Update is called once per frame
-    void Update()
+    public void ArrangeDeck()
     {
-        /*int deckSize = Cards.Count;
+        int deckSize = Cards.Count;
         
-        if (deckSize < deckSize - 5)
-            CardInDeck4.SetActive(false);
-        if (deckSize < deckSize - 15)
-            CardInDeck3.SetActive(false);
-        if (deckSize < 7)
-            CardInDeck2.SetActive(false);
+        if (deckSize < 22)
+            CardInDeck4.enabled = false;
+        if (deckSize < 12)
+            CardInDeck3.enabled = false;
         if (deckSize < 3)
-            CardInDeck1.SetActive(false);*/
+            CardInDeck2.enabled = false;
+        if (deckSize < 1)
+            CardInDeck1.enabled = false;
     }
 
 }

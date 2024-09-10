@@ -7,7 +7,7 @@ public class MainMenu : MonoBehaviour
 {
     public void StartGame()
     {
-        SceneManager.LoadScene("PreGame");
+        SceneManager.LoadScene("SelectMenu");
     }
 
     public void OpenEditor()

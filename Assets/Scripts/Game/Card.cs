@@ -13,6 +13,7 @@ public abstract class Card
     public string EffectText; //texto del efecto vs efecto en codigo
     public string CardEffect;
     public Role thisRole;
+    public int instancesLeft {get; set;}
 
     // Visual fields
     public int intPower;
@@ -61,6 +62,7 @@ public class LeaderCard : Card
 public class Unit : Card
 {
     public bool Gold;
+
     public Unit (int id, int power, string cardName, string effectText, string cardEffect, string faction, string image, bool gold, Role role)
     {
         //Functional assignment
@@ -72,6 +74,7 @@ public class Unit : Card
         CardFaction = faction;
         Gold = gold;
         thisRole = role;
+        instancesLeft = Gold ? 1 : 3;
 
         //Visuals assignment
         img = image;
@@ -103,6 +106,7 @@ public class Decoy : Card
         CardFaction = faction;
         img = image;
         thisRole = Role.Decoy;
+        instancesLeft = 2;
 
         //Visuals assignment
         intPower = 0;
@@ -132,6 +136,7 @@ public class Booster : Card
         CardFaction = faction;
         img = image;
         thisRole = Role.Booster;
+        instancesLeft = 1;
         
         //Visuals assignment
         intPower = 1;
@@ -175,6 +180,7 @@ public class Weather : Card
         CardFaction = faction;
         img = image;
         thisRole = Role.Weather;
+        instancesLeft = 1;
         
         //Visuals assignment
         intPower = 0;
@@ -204,6 +210,7 @@ public class Clearing : Card
         CardFaction = faction;
         img = image;
         thisRole = Role.Clearing;
+        instancesLeft = 1;
         
         //Visuals assignment
         intPower = 0;

@@ -44,7 +44,8 @@ public class TurnSystem : MonoBehaviour
                 foreach (GameCard c in Game.Selected)
                 {
                     c.isSelected = false;
-                    c.transform.position -= c.popUpOnHover;
+                    if (c.transform.parent == TurnSystem.Active.thisHand.transform) 
+                        c.transform.position -= c.popUpOnHover;
                 } 
                 Game.Selected.Clear();
                 Game.displayCard.Reset();

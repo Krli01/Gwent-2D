@@ -3,3 +3,16 @@
 Power = power <= 11 && power > -1 ? power : throw new System.Exception("Power must be a value between 0 and 11");
 if (faction == null) throw new System.Exception ("Unit must belong to a faction");
 else if () si la faccion no existe lanzar error. Desea crearla?
+
+foreach (CardSlot slot in WeatherZone)
+        {
+            if (transform.childCount > 0)
+            {
+                GameCard[] c = GetComponentsInChildren<GameCard>();
+                if (c[0].role == Role.Clearing)
+                {
+                    yield return new WaitForSeconds(0.8f);
+                    TurnSystem.Active.graveyard.SendToGraveyard(c[0]);
+                }
+            }
+        }

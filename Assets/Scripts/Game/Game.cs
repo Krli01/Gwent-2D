@@ -23,10 +23,10 @@ public class Game : MonoBehaviour
         displayCard = FindObjectOfType<DisplayCard>();
         WeatherZone = weatherZone.GetComponentsInChildren<CardSlot>();
         Player1 = new Player("Player 1", "Seaborn", "P1");
-        Player2 = new Player("Player 2", "Whaler", "P2");
+        Player2 = new Player("Player 2", "Pirate", "P2");
         RoundSystem.StartRound(Player1);
-        StartCoroutine(Player1.Deck.DrawCards(Player1.thisHand, 8));
-        StartCoroutine(Player2.Deck.DrawCards(Player2.thisHand, 1));
+        StartCoroutine(Player1.Deck.DrawCards(Player1, 12));
+        StartCoroutine(Player2.Deck.DrawCards(Player2, 10));
     }
 
     public static void EnableZone(Player player, Role role)

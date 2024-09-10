@@ -23,14 +23,12 @@ public class CardSlot : MonoBehaviour, IPointerClickHandler, IPointerEnterHandle
             {
                 GameCard selectedCard = Game.Selected[0];
                 selectedCard.transform.SetParent(transform, false);
-                selectedCard.isSelected = false;
                 selectedCard.transform.localPosition = Vector3.zero;
-                Game.Selected.RemoveAt(0);
+                selectedCard.DeSelect(selectedCard);
                 if (this.transform.childCount > 0) Game.DisableAllZones(TurnSystem.Active);
                 TurnSystem.ActionTaken = true;
                 //Debug.Log($"Card placed in slot: {selectedCard.name}");
             }
-            //Debug.Log("clicked");
         }
         
     }

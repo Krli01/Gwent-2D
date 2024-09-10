@@ -12,6 +12,7 @@ public class Player
     public Hand thisHand;
     public Battlefield battlefield;
     public Graveyard graveyard;
+    public GameObject overflow;
     public float RoundPoints;
     public float TotalPoints;
     public int RoundsWon;
@@ -38,6 +39,8 @@ public class Player
         graveyard = System.Array.Find(graves, c => c.name == $"{player} Graveyard");
         //Debug.Log($"trying to assign graveyard to {name}");
         //if (Deck != null) Debug.Log("success");
+
+        overflow = GameObject.Find($"{player} OverflowContainer");
 
         battlefield = new Battlefield(player);
 
