@@ -10,6 +10,7 @@ public class CardDatabase : MonoBehaviour
     public static List<Card> WhalerDeck = new List<Card>();
     public static List<Card> SeabornDeck = new List<Card>();
     public static List<Card> NeutralDeck = new List<Card>();
+    public static Dictionary<string, LeaderCard> FactionLeaders = new Dictionary<string, LeaderCard>();
     
     public static Dictionary<string, Sprite> factionImages = new Dictionary<string, Sprite>();
     public static Dictionary<int, Sprite> powerImages = new Dictionary<int, Sprite>();
@@ -51,8 +52,12 @@ public class CardDatabase : MonoBehaviour
         roleImages.Add(Role.Leader, Resources.Load<Sprite> ("role siege"));
         
         //Loading cards
+
+        FactionLeaders.Add("Seaborn", new LeaderCard(id, "Seaborn leader", "this is what this card can do", "eff", "Seaborn", "img 1"));
+        FactionLeaders.Add("Whaler", new LeaderCard(id, "Whaler leader", "this is what this card can do", "eff", "Whaler", "img 1"));
+        FactionLeaders.Add("Pirate", new LeaderCard(id, "Pirate leader", "this is what this card can do", "eff", "Pirate", "img 1"));
         
-        SeabornDeck.Add(new Unit(id, 9, "name seaborn 1", "this is what this card can do", "eff", "Seaborn", "img 1", true, Role.Mele));
+        SeabornDeck.Add(new Unit(id++, 9, "name seaborn 1", "this is what this card can do", "eff", "Seaborn", "img 1", true, Role.Mele));
         SeabornDeck.Add(new Unit(id++, 8, "name seaborn 2", "this is what this card can do", "eff", "Seaborn", "img 1", true, Role.Siege));
         SeabornDeck.Add(new Unit(id++, 10, "name seaborn 3", "this is what this card can do", "eff", "Seaborn", "img 1", true, Role.Mele));
         SeabornDeck.Add(new Unit(id++, 7, "name seaborn 4", "this is what this card can do", "eff", "Seaborn", "img 1", true, Role.Agile));
@@ -118,7 +123,6 @@ public class CardDatabase : MonoBehaviour
         NeutralDeck.Add(new Clearing(id++, "name neutral", "this is what this card can do", "eff", "Neutral", "img 1"));
         NeutralDeck.Add(new Booster(id++, "name neutral", "this is what this card can do", "eff", "Neutral", "img 1"));
         NeutralDeck.Add(new Booster(id++, "name neutral", "this is what this card can do", "eff", "Neutral", "img 1"));
-
 
         AvailableDecks.Add("Seaborn", SeabornDeck);
         AvailableDecks.Add("Whaler", WhalerDeck);

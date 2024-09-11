@@ -43,6 +43,10 @@ public class GameCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         EffectText = transform.Find("Effect Text")?.GetComponent<TextMeshProUGUI>();
         isSelected = false;
     }
+    void Update()
+    {
+        CardBack.enabled = showBack ? true : false;      
+    }
 
     public void SetOwner(Player owner)
     {
@@ -64,12 +68,13 @@ public class GameCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         BaseCard = baseCard;
     }
     
-    // Update is called once per frame
-    void Update()
+    public void ActivateLeader()
     {
-        CardBack.enabled = showBack ? true : false;      
-    }
-
+        if (BaseCard is LeaderCard) BaseCard.Activate();
+        Owner.ActivateLeader.interactable = false;
+        TurnSystem.ActionTaken = true;
+        this.DeSelect(this);
+    } 
 
     public void OnPointerEnter(PointerEventData eventData)
     {
@@ -104,20 +109,30 @@ public class GameCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         
         if (role == global::Role.Leader)
         {
-            //enablear boton de activar habilidad
+            if (Game.Selected.Contains(this))
+            {
+                DeSelect(this);
+                Owner.HideLeaderButton();
+            } 
+            else 
+            {
+                Select();
+                if (TurnSystem.Active == Owner) Owner.ShowLeaderButton();
+                if(TurnSystem.ActionTaken) Owner.ActivateLeader.interactable = false;
+            }
         }
         
         else if (transform.parent == TurnSystem.Active.thisHand.transform)
         {
-            if(Game.Selected.Contains(this)) 
+            if(Game.Selected.Contains(this))
             {
                 DeSelect(this);
-                Game.DisableAllZones(TurnSystem.Active);
+                Owner.battlefield.DisableAllZones();
             }
             else
             {
-                Select(this);
-                if (!TurnSystem.ActionTaken) Game.EnableZone(Owner, role);
+                Select();
+                if (!TurnSystem.ActionTaken) Owner.battlefield.EnableZone(role);
             }
         }
 
@@ -125,8 +140,7 @@ public class GameCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         {
             if(TurnSystem.ActionTaken)
             {
-                if (Game.Selected.Contains(this)) DeSelect(this);
-                else Select(this);
+                ChangeSelect();
                 return;
             } 
 
@@ -135,17 +149,19 @@ public class GameCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
             else if (BaseCard is Unit && Game.Selected[0].role == global::Role.Decoy)
             {
                 if (Owner.Name == Game.Selected[0].Owner.Name) ReturnToHand();
+                Owner.battlefield.UpdatePoints();
             }
         }
 
-        else
-            {
-                if (Game.Selected.Contains(this)) DeSelect(this);
-                else Select(this);
-            }
+        else ChangeSelect();
     }
 
-    void Select(GameCard card)
+    void ChangeSelect()
+    {
+        if (Game.Selected.Contains(this)) DeSelect(this);
+        else Select();
+    }
+    void Select()
     {
         // only 1 card can be selected
         if (Game.Selected.Count > 0)
@@ -157,8 +173,8 @@ public class GameCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
             }
         }
         
-        card.isSelected = true;
-        Game.Selected.Add(card);
+        isSelected = true;
+        Game.Selected.Add(this);
         Debug.Log("Selected");
     }
 
@@ -182,7 +198,9 @@ public class GameCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
                 
         //fix visual bug: clearingCard must be killed after 0.7s delay
         Owner.graveyard.SendToGraveyard(this);
+        Owner.battlefield.UpdatePoints();
         clearingCard.Owner.graveyard.SendToGraveyard(clearingCard);
+        clearingCard.Owner.battlefield.UpdatePoints();
     }
 
     void ReturnToHand()

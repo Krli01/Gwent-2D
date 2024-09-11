@@ -7,66 +7,60 @@ using UnityEngine.UI;
 public class TurnSystem : MonoBehaviour
 {
     public static bool Player1Turn;
-    public TextMeshProUGUI TurnText;
     public static Player Active; 
     public static bool ActionTaken;
 
-    // Start is called before the first frame update
+    Button EndTurnButton;
+    Button PassButton;
+
     void Start()
     {
         ActionTaken = false;
         Active = Game.Player1;
+        Button[] buttons = FindObjectsOfType<Button>();
+        EndTurnButton = System.Array.Find(buttons, c => c.name == $"End Turn");
+        PassButton = System.Array.Find(buttons, c => c.name == $"Pass Button");
     }
 
-    // Update is called once per frame
     void Update()
     {
-        TurnText.text = Player1Turn ? "Player 1" : "Player 2";
-        foreach(GameCard c in Active.thisHand.GetComponentsInChildren<GameCard>())
+        foreach(GameCard c in Active.thisHand.GetComponentsInChildren<GameCard>()) c.showBack = false;
+        if (ActionTaken)
         {
-            c.showBack = false;
+            PassButton.interactable = false;
+            EndTurnButton.interactable = true;
         }
     }
 
     public void Pass()
     {
         Active.Passed = true;
-        ActionTaken = true;
         EndTurn();
     }
 
     public void EndTurn()
     {
-        if (ActionTaken)
+        Active.HideLeaderButton();
+        
+        if(Game.Selected.Count > 0)
         {
-            if(Game.Selected.Count > 0)
-            {
-                foreach (GameCard c in Game.Selected)
-                {
-                    c.isSelected = false;
-                    if (c.transform.parent == TurnSystem.Active.thisHand.transform) 
-                        c.transform.position -= c.popUpOnHover;
-                } 
-                Game.Selected.Clear();
-                Game.displayCard.Reset();
-            }
-
-            foreach(GameCard c in Active.thisHand.GetComponentsInChildren<GameCard>())
-            {
-                c.showBack = true;
-            }
-
-            Player1Turn = !Player1Turn;
-            Active = Player1Turn ? Game.Player1 : Game.Player2;  
-
-            if (Active.Passed) 
-            {
-                Player1Turn = !Player1Turn;
-                Active = Player1Turn ? Game.Player1 : Game.Player2;
-            }
+            foreach (GameCard c in Game.Selected) c.DeSelect(c);
+            Game.displayCard.Reset();
         }
 
+        foreach(GameCard c in Active.thisHand.GetComponentsInChildren<GameCard>()) c.showBack = true;
+
+        skipTurn();
+        if (Active.Passed) skipTurn();
+
         ActionTaken = false;
+        PassButton.interactable = true;
         if(Game.Player1.Passed && Game.Player2.Passed) RoundSystem.EndRound();
+    }
+
+    public static void skipTurn()
+    {
+        Player1Turn = !Player1Turn;
+        Active = Player1Turn ? Game.Player1 : Game.Player2;  
     }
 }

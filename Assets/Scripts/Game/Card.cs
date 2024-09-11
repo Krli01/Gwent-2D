@@ -31,7 +31,7 @@ public abstract class Card
 public class LeaderCard : Card
 {
     public bool Activated {get; set;}
-    public LeaderCard(int id, float power, string cardName, string effectText, string cardEffect, string faction, string image)
+    public LeaderCard(int id, string cardName, string effectText, string cardEffect, string faction, string image)
     {
         //Functional assignment
         ID = id;
@@ -47,7 +47,7 @@ public class LeaderCard : Card
         //Visuals assignment
         intPower = 0;
         CardImage = Resources.Load<Sprite>(image);
-        CardRole = CardDatabase.roleImages[thisRole];
+        CardRole = CardDatabase.roleImages[Role.Leader];
         FactionCoat = CardDatabase.factionImages[faction];
         PowerNum = CardDatabase.powerImages[0];
         Border = Resources.Load<Sprite> ("Gold");
@@ -55,7 +55,7 @@ public class LeaderCard : Card
 
     public override void Activate()
     {
-        throw new System.NotImplementedException();
+        Debug.Log("Activated leader");
     }
 }
 
