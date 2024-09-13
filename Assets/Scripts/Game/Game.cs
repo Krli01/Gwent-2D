@@ -23,7 +23,6 @@ public class Game : MonoBehaviour
         PlayerManager.Instance.Player1.Assign(GameManager.Instance.Player1Name, GameManager.Instance.Player1Faction);
         PlayerManager.Instance.Player2.Assign(GameManager.Instance.Player2Name, GameManager.Instance.Player2Faction);
         RoundSystem.Instance.Enable(PlayerManager.Instance.Player1, PlayerManager.Instance.Player2);
-        PlayerManager.Instance.Player2.Assign("Player 2", "Pirate");
         
         RoundSystem.Instance.StartDrawPhase();
         yield return new WaitForSeconds(3);
@@ -42,5 +41,10 @@ public class Game : MonoBehaviour
         PlayerManager.Instance.ResetPlayers();
         InfoPanel.Instance.End(winner);
         Debug.Log("End of game");
+    }
+
+    public void RestartCurrent()
+    {
+        
     }
 }

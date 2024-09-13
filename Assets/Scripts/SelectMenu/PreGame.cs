@@ -1,28 +1,70 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class PreGame : MonoBehaviour
 {
-    public string player1NameInput;
-    public string player1Faction;
-    public string player2NameInput;
-    public string player2Faction;
+    public TMP_InputField nameInput;
+    public Button[] factionButtons;
+    public Button doneButton;
+    public TextMeshProUGUI doneButtonText;
 
-    public void SaveAndStartGame()
+    private int currentPlayer = 1;
+    private string selectedFaction;
+
+    void Start()
     {
-        // Ensure GameManager instance exists
-        if (GameManager.Instance == null)
+        nameInput.text = "Jugador 1";
+        doneButton.interactable = false;
+        doneButtonText.text = "Listo";
+
+        for (int i = 0; i < factionButtons.Length; i++)
         {
-            GameObject gameManagerObject = new GameObject("GameManager");
-            gameManagerObject.AddComponent<GameManager>();
+            int index = i;
+            factionButtons[i].onClick.AddListener(() => SelectFaction(index));
         }
 
-        // Save player information
-        GameManager.Instance.SavePlayerInfo(1, player1NameInput, player1Faction);
-        GameManager.Instance.SavePlayerInfo(2,  player2NameInput, player2Faction);
+        doneButton.onClick.AddListener(OnDoneButtonClick);
+    }
 
-        // L        SceneManager.LoadScene("GameScene", LoadSceneMode.Single);
+    void SelectFaction(int factionIndex)
+    {
+        selectedFaction = factionIndex switch
+        {
+            0 => "Pirate",
+            1 => "Whaler",
+            2 => "Seaborn",
+            _ => "Unknown"
+        };
+
+        doneButton.interactable = !string.IsNullOrEmpty(nameInput.text);
+    }
+
+    void OnDoneButtonClick()
+    {
+        GameManager.Instance.SavePlayerInfo(currentPlayer, nameInput.text, selectedFaction);
+
+        if (currentPlayer == 1)
+        {
+            // Switch to Player 2
+            currentPlayer = 2;
+            nameInput.text = "Jugador 2";
+            selectedFaction = null;
+            doneButton.interactable = false;
+            doneButtonText.text = "Jugar";
+        }
+        else
+        {
+            ResetSelectMenu();
+            GameManager.Instance.StartGame();
+        }
+    }
+
+    void ResetSelectMenu()
+    {
+        nameInput.text = "Jugador 1";
+        doneButton.interactable = false;
+        doneButtonText.text = "Listo";
     }
 }

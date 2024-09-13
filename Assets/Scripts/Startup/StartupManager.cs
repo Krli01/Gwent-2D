@@ -27,6 +27,6 @@ public class StartupManager : MonoBehaviour
 
     void LoadMainMenu()
     {
-        SceneManager.LoadScene("MainMenu");
+        SceneManager.LoadScene(1, LoadSceneMode.Single);
     }
 }

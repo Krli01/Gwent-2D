@@ -1,13 +1,14 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
 
-    public string Player1Name { get; set; }
-    public string Player1Faction { get; set; }
-    public string Player2Name { get; set; }
-    public string Player2Faction { get; set; }
+    public string Player1Name { get; private set; }
+    public string Player1Faction { get; private set; }
+    public string Player2Name { get; private set; }
+    public string Player2Faction { get; private set; }
 
     private void Awake()
     {
@@ -34,5 +35,11 @@ public class GameManager : MonoBehaviour
             Player2Name = name;
             Player2Faction = faction;
         }
+        Debug.Log($"Player {playerNumber}: Name {name}, Faction {faction}");
+    }
+
+    public void StartGame()
+    {
+        SceneManager.LoadScene(3, LoadSceneMode.Single);
     }
 }

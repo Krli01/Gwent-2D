@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using Microsoft.Unity.VisualStudio.Editor;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -12,9 +11,9 @@ public class InfoPanel : MonoBehaviour
     public TextMeshProUGUI Instructions;
     public TextMeshProUGUI ResultText;
     public TextMeshProUGUI ResultTextMini;
-    public UnityEngine.UI.Image Panel;
-    public UnityEngine.UI.Image Banner;
-    public UnityEngine.UI.Image Result;
+    public Image Panel;
+    public Image Banner;
+    public Image Result;
     public Button Replay;
     public Button BackToMenu;
 
@@ -47,7 +46,7 @@ public class InfoPanel : MonoBehaviour
 
     public void End(string winner)
     {
-        Panel.color = Panel.color.WithAlpha(230);
+        //Panel.color = Panel.color.WithAlpha(230);
         if (winner == "Tie") 
         {
             Result.sprite = Resources.Load<Sprite>("end_draw");
@@ -89,7 +88,7 @@ public class InfoPanel : MonoBehaviour
             ResultText.enabled = enabled;
             ResultTextMini.enabled = enabled;
             Banner.enabled = enabled;
-            Replay.gameObject.SetActive(enabled);
+            //Replay.gameObject.SetActive(enabled);
             BackToMenu.gameObject.SetActive(enabled);
         }
         else
@@ -97,7 +96,7 @@ public class InfoPanel : MonoBehaviour
             Banner.enabled = enabled;
             Text.enabled = enabled;
             Instructions.enabled = enabled;
-            Replay.gameObject.SetActive(false);
+            //Replay.gameObject.SetActive(false);
             BackToMenu.gameObject.SetActive(false);
         }
     }

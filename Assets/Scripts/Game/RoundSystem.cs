@@ -97,7 +97,7 @@ public class RoundSystem : MonoBehaviour
             if (Winner != TurnSystem.Instance.Active) TurnSystem.skipTurn();
             Winner = null;
         }
-        InfoPanel.Instance.Show($"Ronda {Round}", 1.5f, 1f, false);
+        InfoPanel.Instance.Show($"Ronda {Round}", 1.5f, 1f, false, $"Turno de {TurnSystem.Instance.Active.Name}");
         //Debug.Log(Player1.RoundsWon + ": " + Player2.RoundsWon);
     }
 
