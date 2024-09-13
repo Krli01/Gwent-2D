@@ -19,11 +19,10 @@ public class CardSlot : MonoBehaviour, IPointerClickHandler, IPointerEnterHandle
     {
         if (Available)
         {
-            if (transform.childCount == 0 && Game.Selected.Count > 0)
+            if (/*transform.childCount == 0 &&*/ Game.Selected.Count > 0)
             {
                 GameCard selectedCard = Game.Selected[0];
                 Summon(selectedCard);
-                TurnSystem.ActionTaken = true;
                 //Debug.Log($"Card placed in slot: {selectedCard.name}");
             }
         }
@@ -34,9 +33,10 @@ public class CardSlot : MonoBehaviour, IPointerClickHandler, IPointerEnterHandle
     {
         card.transform.SetParent(transform, false);
         card.transform.localPosition = Vector3.zero;
-        card.DeSelect(card);
-        if (this.transform.childCount > 0) TurnSystem.Active.battlefield.DisableAllZones();
-        TurnSystem.Active.battlefield.UpdatePoints();
+        card.DeSelect();
+        TurnSystem.Instance.Active.battlefield.DisableAllZones();
+        TurnSystem.Instance.Active.battlefield.UpdatePoints();
+        TurnSystem.Instance.TakeAction();
     }
 
     public void OnPointerEnter(PointerEventData eventData)

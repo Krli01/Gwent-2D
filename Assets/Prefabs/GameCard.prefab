@@ -152,7 +152,7 @@ MonoBehaviour:
   PowerNum: {fileID: 736215352219150053}
   Border: {fileID: 3383954714300667280}
   Role: {fileID: 3878187050747914862}
-  CardBack: {fileID: 0}
+  CardBack: {fileID: 5944474302887422325}
   CardName: {fileID: 1578681412671133952}
   EffectText: {fileID: 2805847441373066096}
   popUpOnHover: {x: 0, y: 10, z: 0}

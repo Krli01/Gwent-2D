@@ -5,42 +5,42 @@ using System.Linq;
 using System.Security.Cryptography;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Game : MonoBehaviour
 {
-    public static Player Player1;
-    public static Player Player2;
-    static Player Winner;
-    public static CardSlot[] WeatherZone;
-    public static DisplayCard displayCard;
-    
-    public static List<GameCard> Selected = new List<GameCard>();
+    public static bool drawPhase;
+    public static List<GameCard> Selected;
     
     void Start()
     {
-        //Debug.Log("started");
-        GameObject weatherZone = GameObject.Find("WeatherZone");
-        displayCard = FindObjectOfType<DisplayCard>();
-        WeatherZone = weatherZone.GetComponentsInChildren<CardSlot>();
-        Player1 = new Player("Player 1", "Seaborn", "P1");
-        Player2 = new Player("Player 2", "Pirate", "P2");
-        RoundSystem.StartRound();
-        StartCoroutine(Player1.Deck.DrawCards(Player1, 12));
-        StartCoroutine(Player2.Deck.DrawCards(Player2, 10));
+        StartCoroutine(StartGame());
+        if (Selected == null) Selected = new List<GameCard>();
+    }
+
+    IEnumerator StartGame()
+    {
+        PlayerManager.Instance.Player1.Assign(GameManager.Instance.Player1Name, GameManager.Instance.Player1Faction);
+        PlayerManager.Instance.Player2.Assign(GameManager.Instance.Player2Name, GameManager.Instance.Player2Faction);
+        RoundSystem.Instance.Enable(PlayerManager.Instance.Player1, PlayerManager.Instance.Player2);
+        PlayerManager.Instance.Player2.Assign("Player 2", "Pirate");
+        
+        RoundSystem.Instance.StartDrawPhase();
+        yield return new WaitForSeconds(3);
+        StartCoroutine(PlayerManager.Instance.Player1.Deck.DrawCards(PlayerManager.Instance.Player1, 10));
+        StartCoroutine(PlayerManager.Instance.Player2.Deck.DrawCards(PlayerManager.Instance.Player2, 10));
     }
 
     public static void SetWinner(Player player)
     {
-        if (player == null)
-        {
-            // Tie
-            Debug.Log("tie");
-        }
-        else 
-        {
-            Winner = player;
-            Debug.Log($"{player.Name} wins");
-        }
+        if (player == null) EndGame("Tie");
+        else EndGame(player.Name); 
     }
 
+    static void EndGame(string winner)
+    {
+        PlayerManager.Instance.ResetPlayers();
+        InfoPanel.Instance.End(winner);
+        Debug.Log("End of game");
+    }
 }

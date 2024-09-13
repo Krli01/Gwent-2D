@@ -4,15 +4,61 @@ Power = power <= 11 && power > -1 ? power : throw new System.Exception("Power mu
 if (faction == null) throw new System.Exception ("Unit must belong to a faction");
 else if () si la faccion no existe lanzar error. Desea crearla?
 
-foreach (CardSlot slot in WeatherZone)
+
+private static void StartDrawPhase()
+    {
+        Debug.Log("Starting Draw Phase");
+        int drawCount = (currentRound == 1) ? FirstRoundDrawCount : SubsequentRoundDrawCount;
+
+        // Show the phase announcement
+        Instance.StartCoroutine(ShowPhaseAnnouncement("Draw Phase"));
+
+        // Wait for the announcement to finish before proceeding
+        Instance.StartCoroutine(DrawPhaseSequence(drawCount));
+    }
+
+    private static IEnumerator ShowPhaseAnnouncement(string phaseText)
+    {
+        phaseAnnouncementText.text = phaseText;
+
+        // Fade in
+        yield return FadeCanvasGroup(phaseAnnouncementCanvasGroup, 0f, 1f, 0.5f);
+
+        // Wait
+        yield return new WaitForSeconds(1f);
+
+        // Fade out
+        yield return FadeCanvasGroup(phaseAnnouncementCanvasGroup, 1f, 0f, 0.5f);
+    }
+
+    private static IEnumerator FadeCanvasGroup(CanvasGroup cg, float start, float end, float duration)
+    {
+        float elapsedTime = 0f;
+        while (elapsedTime < duration)
         {
-            if (transform.childCount > 0)
+            elapsedTime += Time.deltaTime;
+            cg.alpha = Mathf.Lerp(start, end, elapsedTime / duration);
+            yield return null;
+        }
+        cg.alpha = end;
+    }
+
+    private static IEnumerator DrawPhaseSequence(int drawCount)
+    {
+        // Wait for the announcement to finish
+        yield return new WaitForSeconds(2f);
+
+        DrawCards(Player1, drawCount);
+        DrawCards(Player2, drawCount);
+
+        // Determine the loser of the previous round and give them a bonus draw
+        if (currentRound > 1)
+        {
+            Player loser = DetermineLoserOfPreviousRound();
+            if (loser != null)
             {
-                GameCard[] c = GetComponentsInChildren<GameCard>();
-                if (c[0].role == Role.Clearing)
-                {
-                    yield return new WaitForSeconds(0.8f);
-                    TurnSystem.Active.graveyard.SendToGraveyard(c[0]);
-                }
+                Debug.Log($"{loser.Name} lost the previous round and gets a bonus draw.");
+                DrawCards(loser, BonusDrawForLoser);
             }
         }
+    }

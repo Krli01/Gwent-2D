@@ -8,7 +8,7 @@ public class PlayerDeck : MonoBehaviour
 {
     //Functional
     public GameCard cardPrefab;
-    public Stack<Card> Cards = new Stack<Card>();
+    public Stack<Card> Cards;
 
     //Visual
     public GameCard CardInDeck1;
@@ -16,10 +16,16 @@ public class PlayerDeck : MonoBehaviour
     public GameCard CardInDeck3;
     public GameCard CardInDeck4;
 
+    void Start()
+    {
+        if (Cards == null) Cards = new Stack<Card>();
+    }
+
     public void Create(string faction)
     {
-        /*int x;
+        int x;
         int index;
+        if (Cards == null) Cards = new Stack<Card>();
         while(Cards.Count < 30)
         {
             x = Random.Range(0,2);
@@ -47,14 +53,11 @@ public class PlayerDeck : MonoBehaviour
                     //Debug.Log($"{nextCard.CardName}: pushed");
                 }
             }
-        }*/
-
-        foreach (Card c in CardDatabase.AvailableDecks[faction]) Cards.Push(c);
+        }
     }
 
     public IEnumerator DrawCards(Player owner, int n)
     {
-
         for (int i = 0; i < n; i++)
         {
             int cardsInHand = owner.thisHand.transform.childCount;
@@ -66,9 +69,9 @@ public class PlayerDeck : MonoBehaviour
 
                 if (cardsInHand < 10)
                 {
-                    GameCard newCard = Object.Instantiate(cardPrefab, owner.thisHand.transform.position, owner.thisHand.transform.rotation);
+                    GameCard newCard = Instantiate(cardPrefab, owner.thisHand.transform.position, owner.thisHand.transform.rotation);
                     newCard.SetOwner(owner);
-                    if (owner.thisHand.transform != TurnSystem.Active.thisHand.transform)
+                    if (owner.thisHand.transform != TurnSystem.Instance.Active.thisHand.transform)
                     {
                         newCard.showBack = true;
                     }
@@ -78,7 +81,7 @@ public class PlayerDeck : MonoBehaviour
                 }
                 else
                 {
-                    GameCard newCard = Object.Instantiate(cardPrefab, owner.overflow.transform.position, owner.overflow.transform.rotation);
+                    GameCard newCard = Instantiate(cardPrefab, owner.overflow.transform.position, owner.overflow.transform.rotation);
                     newCard.SetOwner(owner);
                     newCard.Assign(cardData);
                     newCard.transform.SetParent(owner.overflow.transform, false);
@@ -87,6 +90,10 @@ public class PlayerDeck : MonoBehaviour
                     owner.graveyard.SendToGraveyard(newCard);
                 }
             }
+            if(Cards.Count == 0) Debug.Log("empty deck");
+            if (Cards == null) Debug.Log("null deck");
+            if (owner.thisHand == null) Debug.Log("hand null");
+            if (owner == null) Debug.Log("owner null");
         }
     }
 

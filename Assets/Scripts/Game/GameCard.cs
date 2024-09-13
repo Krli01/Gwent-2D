@@ -16,7 +16,7 @@ public class GameCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     public bool showBack;
     public float Power;
     //private float PowerExtra;
-    public bool isSelected;
+    bool isSelected;
     public Role role;
 
     public Image CardImage;
@@ -33,14 +33,6 @@ public class GameCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     // Start is called before the first frame update
     void Start()
     {
-        CardImage = transform.Find("CardImage")?.GetComponent<Image>();
-        FactionCoat = transform.Find("Faction")?.GetComponent<Image>();
-        PowerNum = transform.Find("Power")?.GetComponent<Image>();
-        Border = transform.Find("Border")?.GetComponent<Image>();
-        Role = transform.Find("Role")?.GetComponent<Image>();
-        CardBack = transform.Find("CardBack")?.GetComponent<Image>();
-        CardName = transform.Find("Card Name")?.GetComponent<TextMeshProUGUI>();
-        EffectText = transform.Find("Effect Text")?.GetComponent<TextMeshProUGUI>();
         isSelected = false;
     }
     void Update()
@@ -71,34 +63,34 @@ public class GameCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     public void ActivateLeader()
     {
         if (BaseCard is LeaderCard) BaseCard.Activate();
-        Owner.ActivateLeader.interactable = false;
-        TurnSystem.ActionTaken = true;
-        this.DeSelect(this);
+        TurnSystem.Instance.Active.ActivateLeader.interactable = false;
+        TurnSystem.Instance.TakeAction();
+        DeSelect();
     } 
 
     public void OnPointerEnter(PointerEventData eventData)
     {
         //Debug.Log("enter");
-        if (transform.parent == TurnSystem.Active.thisHand.transform && !isSelected)
+        if (transform.parent == TurnSystem.Instance.Active.thisHand.transform && !isSelected)
         {
             transform.position += popUpOnHover;
         }
 
-        if(!showBack) Game.displayCard.Show(BaseCard);
+        if(!showBack) DisplayCard.Instance.Show(BaseCard);
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
         //Debug.Log("exit");
-        if (transform.parent == TurnSystem.Active.thisHand.transform && !isSelected)
+        if (transform.parent == TurnSystem.Instance.Active.thisHand.transform && !isSelected)
         {
             transform.position -= popUpOnHover;    
         }
 
         if (!isSelected) 
         {
-            if(Game.Selected.Count == 0) Game.displayCard.Reset();
-            else Game.displayCard.Show(Game.Selected[0].BaseCard);
+            if(Game.Selected.Count == 0) DisplayCard.Instance.Reset();
+            else DisplayCard.Instance.Show(Game.Selected[0].BaseCard);
         }
 
     }
@@ -107,38 +99,64 @@ public class GameCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
         if (showBack) return;
         
-        if (role == global::Role.Leader)
+        if (Game.drawPhase)
         {
             if (Game.Selected.Contains(this))
             {
-                DeSelect(this);
+                Game.Selected.Remove(this);
+                isSelected = false;
+                if (Game.Selected.Count == 0)
+                {
+                    Button Discard = GameObject.Find("End Phase")?.GetComponent<Button>();
+                    TextMeshProUGUI Text = Discard.GetComponentInChildren<TextMeshProUGUI>();
+                    Text.text = "Continuar";
+                }
+            }
+            else if (transform.parent == TurnSystem.Instance.Active.thisHand.transform && Game.Selected.Count < 2)
+            {
+                Game.Selected.Add(this);
+                isSelected = true;
+                if (Game.Selected.Count == 1)
+                {
+                    Button Discard = GameObject.Find("End Phase")?.GetComponent<Button>();
+                    TextMeshProUGUI Text = Discard.GetComponentInChildren<TextMeshProUGUI>();
+                    Text.text = "Descartar";
+                }
+            }
+        }
+
+        else if (role == global::Role.Leader)
+        {
+            if (Game.Selected.Contains(this))
+            {
+                DeSelect();
                 Owner.HideLeaderButton();
             } 
             else 
             {
                 Select();
-                if (TurnSystem.Active == Owner) Owner.ShowLeaderButton();
-                if(TurnSystem.ActionTaken) Owner.ActivateLeader.interactable = false;
+                if (TurnSystem.Instance.Active == Owner) Owner.ShowLeaderButton();
+                if(TurnSystem.Instance.ActionTaken) Owner.ActivateLeader.interactable = false;
             }
         }
         
-        else if (transform.parent == TurnSystem.Active.thisHand.transform)
+        else if (transform.parent == TurnSystem.Instance.Active.thisHand.transform)
         {
             if(Game.Selected.Contains(this))
             {
-                DeSelect(this);
+                DeSelect();
                 Owner.battlefield.DisableAllZones();
             }
             else
             {
                 Select();
-                if (!TurnSystem.ActionTaken) Owner.battlefield.EnableZone(role);
+                if (!TurnSystem.Instance.ActionTaken) Owner.battlefield.EnableZones(role);
             }
         }
 
         else if (Game.Selected.Count > 0)
         {
-            if(TurnSystem.ActionTaken)
+            if(TurnSystem.Instance.ActionTaken)
             {
                 ChangeSelect();
                 return;
@@ -158,18 +176,19 @@ public class GameCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     void ChangeSelect()
     {
-        if (Game.Selected.Contains(this)) DeSelect(this);
+        if (Game.Selected.Contains(this)) DeSelect();
         else Select();
     }
     void Select()
     {
+        Debug.Log(TurnSystem.Instance.ActionTaken);
         // only 1 card can be selected
         if (Game.Selected.Count > 0)
         {
             for (int i = 0; i < Game.Selected.Count; i++)
             {
                 GameCard c = Game.Selected[i];
-                DeSelect(c);
+                c.DeSelect();
             }
         }
         
@@ -178,11 +197,11 @@ public class GameCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         Debug.Log("Selected");
     }
 
-    public void DeSelect(GameCard card)
+    public void DeSelect()
     {
-        card.isSelected = false;
-        if (card.gameObject != this.gameObject && card.transform.parent == TurnSystem.Active.thisHand.transform) card.transform.position -= popUpOnHover;
-        Game.Selected.Remove(card);
+        isSelected = false;
+        if (transform.parent == TurnSystem.Instance.Active.thisHand.transform) transform.position -= popUpOnHover;
+        Game.Selected.Remove(this);
         Debug.Log("De-Selected");
     }
 
@@ -194,7 +213,7 @@ public class GameCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         clearingCard.transform.SetParent(t);
         clearingCard.transform.localPosition = Vector3.zero;            
         Game.Selected.Clear();
-        TurnSystem.ActionTaken = true;
+        TurnSystem.Instance.TakeAction();
                 
         //fix visual bug: clearingCard must be killed after 0.7s delay
         Owner.graveyard.SendToGraveyard(this);
@@ -205,7 +224,7 @@ public class GameCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     void ReturnToHand()
     {
-        Transform hand = TurnSystem.Active.thisHand.transform;
+        Transform hand = TurnSystem.Instance.Active.thisHand.transform;
         Transform t = transform.parent;
         transform.SetParent(hand);
         GameCard card = Game.Selected[0];
@@ -213,6 +232,14 @@ public class GameCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         card.isSelected = false;                    
         card.transform.localPosition = Vector3.zero;            
         Game.Selected.Clear();
-        TurnSystem.ActionTaken = true;
+        TurnSystem.Instance.TakeAction();
+    }
+
+    public void ResetLeader()
+    {
+        if (role == global::Role.Leader)
+        {
+            BaseCard = null;
+        }
     }
 }

@@ -2,39 +2,35 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 
-public class Battlefield
+public class Battlefield : MonoBehaviour
 {
-    public CardSlot[] MeleRow;
-    public CardSlot[] RangeRow;
-    public CardSlot[] SiegeRow;
+    public GameObject Mele;
+    public GameObject Range;
+    public GameObject Siege;        
+    public GameObject weatherZone;
     
-    GameObject RowCount;
-    TextMeshProUGUI MelePoints;
-    TextMeshProUGUI RangePoints;
-    TextMeshProUGUI SiegePoints;
+    CardSlot[] MeleRow;
+    CardSlot[] RangeRow;
+    CardSlot[] SiegeRow;
+    CardSlot[] WeatherZone;
+    
+    public TextMeshProUGUI MelePoints;
+    public TextMeshProUGUI RangePoints;
+    public TextMeshProUGUI SiegePoints;
     public float score;
 
-    public Battlefield(string player, GameObject rowCount)
+    void Start()
     {
-        GameObject Mele = GameObject.Find($"{player} Mele");
-        GameObject Range = GameObject.Find($"{player} Range");
-        GameObject Siege = GameObject.Find($"{player} Siege");
-
         MeleRow = Mele.GetComponentsInChildren<CardSlot>();
         RangeRow = Range.GetComponentsInChildren<CardSlot>();
         SiegeRow = Siege.GetComponentsInChildren<CardSlot>();
-
-        RowCount = rowCount;
-        TextMeshProUGUI[] counts = rowCount.GetComponentsInChildren<TextMeshProUGUI>();
-        MelePoints = System.Array.Find(counts, c => c.name == "Mele");
-        RangePoints = System.Array.Find(counts, c => c.name == "Range");
-        SiegePoints = System.Array.Find(counts, c => c.name == "Siege");
+        WeatherZone = weatherZone.GetComponentsInChildren<CardSlot>();
     }
 
-    //MOVE ENABLES HERE
-    public void EnableZone(Role role)
+    public void EnableZones(Role role)
     {
         switch (role)
         {
@@ -68,8 +64,8 @@ public class Battlefield
                 break;
 
             case Role.Weather:
-                CardSlot[][] WeatherZone = new CardSlot[][] {Game.WeatherZone};
-                Enable(WeatherZone, false);
+                CardSlot[][] weatherZone = new CardSlot[][] {WeatherZone};
+                Enable(weatherZone, false);
                 break;
         }
     }
@@ -103,7 +99,7 @@ public class Battlefield
     } 
     void DisableOtherZones(CardSlot[][] enabledZones, bool booster)
     {
-        CardSlot[][] allZones = {MeleRow, RangeRow, SiegeRow, Game.WeatherZone};
+        CardSlot[][] allZones = {MeleRow, RangeRow, SiegeRow, WeatherZone};
 
         foreach (CardSlot[] zone in allZones)
         {
@@ -120,6 +116,7 @@ public class Battlefield
                 {
                     foreach (CardSlot slot in zone)
                     {
+                        //Debug.Log(slot.name);
                         if (slot.isBooster) slot.Available = false;
                     } 
                 }
@@ -129,21 +126,22 @@ public class Battlefield
 
     public void DisableAllZones()
     {
-        CardSlot[][] alltargetZones = new CardSlot[][] {MeleRow, RangeRow, SiegeRow, Game.WeatherZone};
+        CardSlot[][] alltargetZones = new CardSlot[][] {MeleRow, RangeRow, SiegeRow, WeatherZone};
 
         foreach (CardSlot[] zone in alltargetZones)
         {
             foreach (CardSlot slot in zone)
             {
+                //Debug.Log(slot.name);
                 slot.Available = false;
             }
         }
-        Debug.Log("All zonesdisabled");
+        //Debug.Log("All zonesdisabled");
     }
 
-    public void Clear()
+    public void Clear(Graveyard graveyard)
     {
-        CardSlot[][] alltargetZones = new CardSlot[][] {MeleRow, RangeRow, SiegeRow, Game.WeatherZone};
+        CardSlot[][] alltargetZones = new CardSlot[][] {MeleRow, RangeRow, SiegeRow, WeatherZone};
 
         foreach (CardSlot[] zone in alltargetZones)
         {
@@ -152,7 +150,7 @@ public class Battlefield
                 if (slot.transform.childCount > 0)
                 {
                     GameCard c = slot.GetComponentInChildren<GameCard>();
-                    //c.SendToGraveyard();
+                    graveyard.SendToGraveyard(c);
                 }
             }
         }

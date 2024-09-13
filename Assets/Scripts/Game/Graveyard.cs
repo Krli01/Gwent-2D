@@ -27,8 +27,8 @@ public class Graveyard : MonoBehaviour
     {
         Card cardData = Cards[i];
 
-        GameCard newCard = Object.Instantiate(cardPrefab, transform.position, transform.rotation);
-        newCard.SetOwner(TurnSystem.Active);
+        GameCard newCard = Instantiate(cardPrefab, transform.position, transform.rotation);
+        newCard.SetOwner(TurnSystem.Instance.Active);
         newCard.Assign(cardData);
         newCard.transform.SetParent(transform, false);
     }

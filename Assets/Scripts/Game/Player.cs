@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.UI;
 //using UnityEngine.UIElements;
 
-public class Player 
+public class Player : MonoBehaviour
 {
     public string Name;
     public string faction;
@@ -22,51 +22,46 @@ public class Player
     public Button ActivateLeader;
     public TextMeshProUGUI buttontext;
 
+    public Image Coin1;
+    public Image Coin2;
+
     public int RoundsWon;
     public bool Passed;
 
-    // Start is called before the first frame update
-    public Player(string name, string f, string player)
+    void Start()
+    {
+        //ActivateLeader.gameObject.SetActive(false);
+        ActivateLeader.enabled = false;
+        ActivateLeader.image.enabled = false;
+        buttontext.enabled = false;
+    }
+    public void Assign (string name, string f)
     {
         Name = name;
         faction = f;
-        
-        GameCard[] leaders = GameObject.FindObjectsOfType<GameCard>();
-        Leader = System.Array.Find(leaders, c => c.name == $"{player} Leader");
-        Leader.Assign(CardDatabase.FactionLeaders[faction]);
-        Leader.SetOwner(this);
-        
-        PlayerDeck[] decks = GameObject.FindObjectsOfType<PlayerDeck>();
-        Deck = System.Array.Find(decks, c => c.name == $"{player} Deck");
-        Deck.Create(f);
-        
-        Hand[] hands = GameObject.FindObjectsOfType<Hand>();
-        thisHand = System.Array.Find(hands, c => c.name == $"{player} Hand");
-
-        Graveyard[] graves = GameObject.FindObjectsOfType<Graveyard>();
-        graveyard = System.Array.Find(graves, c => c.name == $"{player} Graveyard");
-
-        Button[] buttons = GameObject.FindObjectsOfType<Button>();
-        ActivateLeader = System.Array.Find(buttons, c => c.name == $"{player} Activate Leader");
-        buttontext = ActivateLeader.GetComponentInChildren<TextMeshProUGUI>();
-        buttontext.enabled = false;
-        ActivateLeader.enabled = false;
-        
-        Image[] images = GameObject.FindObjectsOfType<Image>();
-        LeaderActive = System.Array.Find(images, c => c.name == $"{player} Activate Leader");
-        LeaderActive.enabled = false;
-
-        overflow = GameObject.Find($"{player} OverflowContainer");
-
-        GameObject rowCount = GameObject.Find($"{player} RowCount");
-        battlefield = new Battlefield(player, rowCount);
-
         RoundsWon = 0;
         Passed = false;
+        Deck.Create(f);
+        Leader.Assign(CardDatabase.FactionLeaders[f]);
+        Leader.SetOwner(this);
+    }
+
+    public void Reset()
+    {
+        Name = "";
+        faction = "";
+        RoundsWon = 0;
+        Passed = false;
+        Leader.ResetLeader();
+        thisHand.Clear();
+        Deck.Cards.Clear();
+        graveyard.Cards.Clear();
+        //battlefields are cleared by RoundSystem
     }
 
     public void ShowLeaderButton()
     {
+        //ActivateLeader.gameObject.SetActive(true);
         ActivateLeader.enabled = true;
         ActivateLeader.image.enabled = true;
         buttontext.enabled = true;
@@ -74,8 +69,16 @@ public class Player
 
     public void HideLeaderButton()
     {
+        //ActivateLeader.gameObject.SetActive(false);
         ActivateLeader.enabled = false;
         ActivateLeader.image.enabled = false;
         buttontext.enabled = false;
+    }
+
+    public IEnumerator PutCoin()
+    {
+        yield return new WaitForSeconds(1f);
+        if (RoundsWon == 1) Coin1.enabled = true;
+        if (RoundsWon == 2) Coin2.enabled = true;
     }
 }

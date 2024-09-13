@@ -22,4 +22,12 @@ public class Hand : MonoBehaviour
         if(CardsInHand < 9) layoutGroup.spacing = 20;
         else layoutGroup.spacing = 15;
     }
+
+    public void Clear()
+    {
+        foreach (GameCard c in transform.GetComponentsInChildren<GameCard>())
+        {
+            TurnSystem.Instance.Active.graveyard.SendToGraveyard(c);
+        }
+    }
 }
