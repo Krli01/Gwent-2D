@@ -21,9 +21,10 @@ public class TokenDatabase : MonoBehaviour
     
     public readonly string[] KeywordLexemes = new string[]
     {
-        "if",
-        "else",
+        //"if",
+        //"else",
         "for",
+        "in",
         "while",
         "Number",
         "String",
@@ -31,23 +32,24 @@ public class TokenDatabase : MonoBehaviour
     };
     public readonly Dictionary<string, TokenType> Keywords = new Dictionary<string, TokenType>()
     {
-        {"if", TokenType.IF},
-        {"else", TokenType.ELSE},
+        //{"if", TokenType.IF},
+        //{"else", TokenType.ELSE},
         {"Number", TokenType.KW_NUMBER},
         {"String", TokenType.KW_STRING},
         {"Boolean", TokenType.KW_BOOLEAN},
         {"for", TokenType.FOR},
+        {"in", TokenType.IN},
         {"while", TokenType.WHILE},
-        
     };
     public readonly string[] GameObjectLexemes = new string[]
     {
         "card",
-        "Type",
-        "Name",
-        "Faction",
-        "Power",
-        "Range",
+        // "Type",
+        // "Name",
+        // "Faction",
+        // "Power",
+        // "Range",
+        // "Image",
         "OnActivation",
         "Effect",
         "Selector",
@@ -62,11 +64,12 @@ public class TokenDatabase : MonoBehaviour
     public readonly Dictionary<string, TokenType> GameObjects = new Dictionary<string, TokenType>()
     {
         {"card", TokenType.CARD},
-        {"Type", TokenType.TYPE},
-        {"Name", TokenType.NAME},
-        {"Faction", TokenType.FACTION},
-        {"Power", TokenType.POWER},
-        {"Range", TokenType.RANGE},
+        //{"Type", TokenType.TYPE},
+        //{"Name", TokenType.NAME},
+        //{"Faction", TokenType.FACTION},
+        //{"Power", TokenType.POWER},
+        //{"Range", TokenType.RANGE},
+        //{"Image", TokenType.IMAGE},
         {"OnActivation", TokenType.ON_ACTIVATION},
         {"Effect", TokenType.EFFECT_PROP},
         {"Selector", TokenType.SELECTOR},
@@ -115,6 +118,8 @@ public class TokenDatabase : MonoBehaviour
         {":", TokenType.COLON},
         {";", TokenType.SEMICOLON},
         {"=", TokenType.ASSIGN},
+        {"+=", TokenType.PLUS_ASSIGN},
+        {"-=", TokenType.MINUS_ASSIGN},
         {"=>", TokenType.PREDICATE_ASSIGN},
     };
 }

@@ -1,23 +1,22 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using UnityEngine;
 
-public class Lexer : MonoBehaviour
+public class Lexer
 {
     private string inputText {get; set;}
     public int currentLine { get; private set; }
     public string Error { get; private set; }
-    public bool Success { get; private set;}
-    private List<Token> Tokens = new List<Token>();
+    private List<Token> Tokens;
 
     public List<Token> Run(string input)
     {
-        Success = false;
+        Tokens = new List<Token>();
         currentLine = 1;
         Error = "";
         inputText = input;
-        Tokens.Clear();
         
         Token nextToken;
         do
@@ -34,14 +33,9 @@ public class Lexer : MonoBehaviour
 
     Token GetNextToken()
     {
-        if (inputText == "")
-        {
-            Success = true;
-            return new Token(TokenType.EOF, "", currentLine);
-        } 
-            
+        if (inputText == "") return new Token(TokenType.EOF, "", currentLine); 
 
-        var firstSeparator = Regex.Match(inputText, @"\s+|\n|\""|[\[\](){},\.;:]|(=>)|(!=)|(==)|=|[*/^!|&]|@@|@|
+        var firstSeparator = Regex.Match(inputText, @"\r\n|\n|\s+|\""|[\[\](){},\.;:]|(=>)|(!=)|(==)|=|[*/^!|&]|@@|@|
             \+\+|\+|(\-\-)|\-|[<>]|(>=)|(<=)");
         if (firstSeparator.Success)
         {
@@ -92,31 +86,36 @@ public class Lexer : MonoBehaviour
                     else
                     {
                         Error = $"Line {currentLine}: Invalid token";
+                        Tokens.Clear();
                         return null;
                     }
                 }
+                if (Regex.Match(firstSeparator.Value, @"\r\n|\n").Success)
+                {
+                    string newlineChar = firstSeparator.Value;
+                    inputText = inputText.Substring(newlineChar.Length);
+                    currentLine++;
+                    return GetNextToken();
+                }
                 if (Regex.Match(firstSeparator.Value, @"\s+").Success)
                 {
+                    //Debug.Log("found space");
                     inputText = inputText.Substring(firstSeparator.Length);
                     return GetNextToken();
                 }
-                if (firstSeparator.Value == "\n")
-                {
-                    inputText = inputText.Substring(1);
-                    currentLine ++;
-                    return GetNextToken();
-                }
-                if (Regex.Match(firstSeparator.Value, @"[*/^!|&]|@@|@|\+\+|\+|(\-\-)|\-").Success)
+                if (Regex.Match(firstSeparator.Value, @"[*/^&|!]|@@|@|\+\+|\+|(\-\-)|\-").Success)
                 {    
+                    inputText = inputText.Substring(firstSeparator.Length);
+                    if (firstSeparator.Value == "/" && inputText[0] == '/')
+                    {
+                        //Debug.Log("comment");
+                        var lineEnd = Regex.Match(inputText, "\n");
+                        inputText = inputText.Substring(lineEnd.Index);
+                        currentLine ++;
+                        return GetNextToken();
+                    }
                     //Debug.Log(firstSeparator.Value);
-                    inputText = inputText.Substring(firstSeparator.Length);
                     return CreateOperatorToken(firstSeparator);
-                }
-
-                if (Regex.Match(firstSeparator.Value, @"[<>]|(>=)|(<=)|(==)").Success)
-                {
-                    inputText = inputText.Substring(firstSeparator.Length);
-                    return CreateComparatorToken(firstSeparator);
                 }
 
                 if (Regex.Match(firstSeparator.Value, @"[\[\](){},\.;:]|(=>)|(!=)|=").Success)
@@ -124,10 +123,17 @@ public class Lexer : MonoBehaviour
                     inputText = inputText.Substring(firstSeparator.Length);
                     return CreateSymbolToken(firstSeparator);
                 }
+
+                if (Regex.Match(firstSeparator.Value, @"[<>]|(>=)|(<=)|(==)").Success)
+                {
+                    inputText = inputText.Substring(firstSeparator.Length);
+                    return CreateComparatorToken(firstSeparator);
+                }
             }
         }
 
-        Error = $"Line {currentLine}: Separator (symbol) expected";
+        Error = $"Line {currentLine}: Invalid token";
+        Tokens.Clear();
         return null;
     }    
     
@@ -152,6 +158,7 @@ public class Lexer : MonoBehaviour
         else
         {
             Error = $"Line {currentLine} : Invalid token '{data}'";
+            Tokens.Clear();
             return null;
         }
     }
@@ -166,10 +173,47 @@ public class Lexer : MonoBehaviour
     }
     private Token CreateOperatorToken(Match match)
     {
-        if(inputText[0] == '+')
+        if (match.Value == "+")
         {
-            inputText = inputText.Substring(1);
-            return new Token(TokenType.U_INCREMENT, match.Value, currentLine);
+            if(inputText[0] == '+')
+            {
+                inputText = inputText.Substring(1);
+                return new Token(TokenDatabase.Instance.Operators["++"], match.Value, currentLine);
+            }
+            if(inputText[0] == '=')
+            {
+                inputText = inputText.Substring(1);
+                return new Token(TokenDatabase.Instance.Symbols["+="], match.Value, currentLine);
+            }
+        }
+        if (match.Value == "-")
+        {
+            /*if(inputText[0] == '-')
+            {
+                inputText = inputText.Substring(1);
+                return new Token(TokenType.U_INCREMENT, match.Value, currentLine);
+            }*/
+            if(inputText[0] == '=')
+            {
+                inputText = inputText.Substring(1);
+                return new Token(TokenDatabase.Instance.Symbols["-="], match.Value, currentLine);
+            }
+        }
+        if (match.Value == "&")
+        {
+            if(inputText[0] == '&')
+            {
+                inputText = inputText.Substring(1);
+                return new Token(TokenDatabase.Instance.Operators["&&"], match.Value, currentLine);
+            }
+        }
+        if (match.Value == "|")
+        {
+            if(inputText[0] == '|')
+            {
+                inputText = inputText.Substring(1);
+                return new Token(TokenDatabase.Instance.Operators["||"], match.Value, currentLine);
+            }
         }
         TokenType type = TokenDatabase.Instance.Operators[match.Value];
         return new Token(type, match.Value, currentLine);
@@ -180,6 +224,7 @@ public class Lexer : MonoBehaviour
     }
     private Token CreateSymbolToken(Match match)
     {
+        if (match.Value == "==") return new Token(TokenType.EQUALS, "==", currentLine);
         TokenType type = TokenDatabase.Instance.Symbols[match.Value];
         return new Token(type, match.Value, currentLine);
     }

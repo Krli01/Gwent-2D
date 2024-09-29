@@ -13,17 +13,19 @@ public enum TokenType
         KW_STRING,
         KW_NUMBER,
         FOR,
+        IN,
         WHILE,
         
     #endregion
 
     #region Game Objects
         CARD,
-        TYPE,
-        NAME,
-        FACTION,
-        POWER,
-        RANGE,
+        //TYPE,
+        //NAME,
+        //FACTION,
+        //POWER,
+        //RANGE,
+        //IMAGE,
         ON_ACTIVATION,
         EFFECT_PROP,
         SELECTOR,
@@ -76,6 +78,8 @@ public enum TokenType
         COLON,
         SEMICOLON,
         ASSIGN,
+        PLUS_ASSIGN,
+        MINUS_ASSIGN,
         PREDICATE_ASSIGN,
 
     #endregion

@@ -8,6 +8,7 @@ public class CardDatabase : MonoBehaviour
 {
     public static Dictionary<string,List<Card>> AvailableDecks = new Dictionary<string, List<Card>>();
     public static Dictionary<string, LeaderCard> FactionLeaders = new Dictionary<string, LeaderCard>();
+    public static Dictionary<string, Effect> Effects = new Dictionary<string, Effect>();
     
     //Visual assets
     public static Dictionary<string, Sprite> factionImages = new Dictionary<string, Sprite>();
@@ -16,7 +17,7 @@ public class CardDatabase : MonoBehaviour
     public static Dictionary<Role, Sprite> roleImages = new Dictionary<Role, Sprite>();
 
     public static CardDatabase Instance { get; private set; }
-    int id = 0;
+    public int id = 0;
     
     private void Awake() 
     {
@@ -75,76 +76,76 @@ public class CardDatabase : MonoBehaviour
         List<Card> SeabornDeck = new List<Card>();
         List<Card> NeutralDeck = new List<Card>();
         
-        FactionLeaders.Add("Seaborn", new LeaderCard(id, "Seaborn leader", "this is what this card can do", "eff", "Seaborn", "img 1"));
-        FactionLeaders.Add("Whaler", new LeaderCard(id, "Whaler leader", "this is what this card can do", "eff", "Whaler", "img 1"));
-        FactionLeaders.Add("Pirate", new LeaderCard(id, "Pirate leader", "this is what this card can do", "eff", "Pirate", "img 1"));
+        FactionLeaders.Add("Seaborn", new LeaderCard(id, "Seaborn leader", "this is what this card can do", null, "Seaborn", "img 1"));
+        FactionLeaders.Add("Whaler", new LeaderCard(id, "Whaler leader", "this is what this card can do", null, "Whaler", "img 1"));
+        FactionLeaders.Add("Pirate", new LeaderCard(id, "Pirate leader", "this is what this card can do", null, "Pirate", "img 1"));
         
-        SeabornDeck.Add(new Unit(id++, 9, "name seaborn 1", "this is what this card can do", "eff", "Seaborn", "img 1", true, Role.Mele));
-        SeabornDeck.Add(new Unit(id++, 8, "name seaborn 2", "this is what this card can do", "eff", "Seaborn", "img 1", true, Role.Siege));
-        SeabornDeck.Add(new Unit(id++, 10, "name seaborn 3", "this is what this card can do", "eff", "Seaborn", "img 1", true, Role.Mele));
-        SeabornDeck.Add(new Unit(id++, 7, "name seaborn 4", "this is what this card can do", "eff", "Seaborn", "img 1", true, Role.Agile));
-        SeabornDeck.Add(new Unit(id++, 3, "name seaborn 5", "this is what this card can do", "eff", "Seaborn", "img 1", false, Role.Siege));
-        SeabornDeck.Add(new Unit(id++, 4, "name seaborn 6", "this is what this card can do", "eff", "Seaborn", "img 1", false, Role.Range));
-        SeabornDeck.Add(new Unit(id++, 6, "name seaborn 7", "this is what this card can do", "eff", "Seaborn", "img 1", false, Role.Agile));
-        SeabornDeck.Add(new Unit(id++, 5, "name seaborn 8", "this is what this card can do", "eff", "Seaborn", "img 1", false, Role.Mele));
-        SeabornDeck.Add(new Unit(id++, 2, "name seaborn 9", "this is what this card can do", "eff", "Seaborn", "img 1", false, Role.Range));
-        SeabornDeck.Add(new Unit(id++, 2, "name seaborn 10", "this is what this card can do", "eff", "Seaborn", "img 1", false, Role.Mele));
-        SeabornDeck.Add(new Booster(id++, "name seaborn 11", "this is what this card can do", "eff", "Seaborn", "img 1"));
-        SeabornDeck.Add(new Booster(id++, "name seaborn 12", "this is what this card can do", "eff", "Seaborn", "img 1"));
-        SeabornDeck.Add(new Decoy(id++, "name seaborn 13", "this is what this card can do", "eff", "Seaborn", "img 1"));
-        SeabornDeck.Add(new Decoy(id++, "name seaborn 14", "this is what this card can do", "eff", "Seaborn", "img 1"));
-        SeabornDeck.Add(new Weather(id++, "name seaborn 15", "this is what this card can do", "eff", "Seaborn", "img 1"));
-        SeabornDeck.Add(new Weather(id++, "name seaborn 16", "this is what this card can do", "eff", "Seaborn", "img 1"));
-        SeabornDeck.Add(new Clearing(id++, "name seaborn 17", "this is what this card can do", "eff", "Seaborn", "img 1"));
+        SeabornDeck.Add(new Unit(id++, 9, "name seaborn 1", "this is what this card can do", null, "Seaborn", "img 1", true, Role.Mele));
+        SeabornDeck.Add(new Unit(id++, 8, "name seaborn 2", "this is what this card can do", null, "Seaborn", "img 1", true, Role.Siege));
+        SeabornDeck.Add(new Unit(id++, 10, "name seaborn 3", "this is what this card can do", null, "Seaborn", "img 1", true, Role.Mele));
+        SeabornDeck.Add(new Unit(id++, 7, "name seaborn 4", "this is what this card can do", null, "Seaborn", "img 1", true, Role.Agile));
+        SeabornDeck.Add(new Unit(id++, 3, "name seaborn 5", "this is what this card can do", null, "Seaborn", "img 1", false, Role.Siege));
+        SeabornDeck.Add(new Unit(id++, 4, "name seaborn 6", "this is what this card can do", null, "Seaborn", "img 1", false, Role.Range));
+        SeabornDeck.Add(new Unit(id++, 6, "name seaborn 7", "this is what this card can do", null, "Seaborn", "img 1", false, Role.Agile));
+        SeabornDeck.Add(new Unit(id++, 5, "name seaborn 8", "this is what this card can do", null, "Seaborn", "img 1", false, Role.Mele));
+        SeabornDeck.Add(new Unit(id++, 2, "name seaborn 9", "this is what this card can do", null, "Seaborn", "img 1", false, Role.Range));
+        SeabornDeck.Add(new Unit(id++, 2, "name seaborn 10", "this is what this card can do", null, "Seaborn", "img 1", false, Role.Mele));
+        SeabornDeck.Add(new Booster(id++, "name seaborn 11", "this is what this card can do", null, "Seaborn", "img 1"));
+        SeabornDeck.Add(new Booster(id++, "name seaborn 12", "this is what this card can do", null, "Seaborn", "img 1"));
+        SeabornDeck.Add(new Decoy(id++, "name seaborn 13", "this is what this card can do", null, "Seaborn", "img 1"));
+        SeabornDeck.Add(new Decoy(id++, "name seaborn 14", "this is what this card can do", null, "Seaborn", "img 1"));
+        SeabornDeck.Add(new Weather(id++, "name seaborn 15", "this is what this card can do", null, "Seaborn", "img 1"));
+        SeabornDeck.Add(new Weather(id++, "name seaborn 16", "this is what this card can do", null, "Seaborn", "img 1"));
+        SeabornDeck.Add(new Clearing(id++, "name seaborn 17", "this is what this card can do", null, "Seaborn", "img 1"));
 
-        WhalerDeck.Add(new Unit(id++, 9, "name whaler", "this is what this card can do", "eff", "Whaler", "img 1", true, Role.Mele));
-        WhalerDeck.Add(new Unit(id++, 8, "name whaler", "this is what this card can do", "eff", "Whaler", "img 1", true, Role.Siege));
-        WhalerDeck.Add(new Unit(id++, 10, "name whaler", "this is what this card can do", "eff", "Whaler", "img 1", true, Role.Mele));
-        WhalerDeck.Add(new Unit(id++, 7, "name whaler", "this is what this card can do", "eff", "Whaler", "img 1", true, Role.Agile));
-        WhalerDeck.Add(new Unit(id++, 3, "name whaler", "this is what this card can do", "eff", "Whaler", "img 1", false, Role.Siege));
-        WhalerDeck.Add(new Unit(id++, 4, "name whaler", "this is what this card can do", "eff", "Whaler", "img 1", false, Role.Range));
-        WhalerDeck.Add(new Unit(id++, 6, "name whaler", "this is what this card can do", "eff", "Whaler", "img 1", false, Role.Agile));
-        WhalerDeck.Add(new Unit(id++, 5, "name whaler", "this is what this card can do", "eff", "Whaler", "img 1", false, Role.Mele));
-        WhalerDeck.Add(new Unit(id++, 2, "name whaler", "this is what this card can do", "eff", "Whaler", "img 1", false, Role.Range));
-        WhalerDeck.Add(new Unit(id++, 2, "name whaler", "this is what this card can do", "eff", "Whaler", "img 1", false, Role.Mele));
-        WhalerDeck.Add(new Booster(id++, "name whaler", "this is what this card can do", "eff", "Whaler", "img 1"));
-        WhalerDeck.Add(new Booster(id++, "name whaler", "this is what this card can do", "eff", "Whaler", "img 1"));
-        WhalerDeck.Add(new Decoy(id++, "name whaler", "this is what this card can do", "eff", "Whaler", "img 1"));
-        WhalerDeck.Add(new Decoy(id++, "name whaler", "this is what this card can do", "eff", "Whaler", "img 1"));
-        WhalerDeck.Add(new Weather(id++, "name whaler", "this is what this card can do", "eff", "Whaler", "img 1"));
-        WhalerDeck.Add(new Weather(id++, "name whaler", "this is what this card can do", "eff", "Whaler", "img 1"));
-        WhalerDeck.Add(new Clearing(id++, "name whaler", "this is what this card can do", "eff", "Whaler", "img 1"));
+        WhalerDeck.Add(new Unit(id++, 9, "name whaler", "this is what this card can do", null, "Whaler", "img 1", true, Role.Mele));
+        WhalerDeck.Add(new Unit(id++, 8, "name whaler", "this is what this card can do", null, "Whaler", "img 1", true, Role.Siege));
+        WhalerDeck.Add(new Unit(id++, 10, "name whaler", "this is what this card can do", null, "Whaler", "img 1", true, Role.Mele));
+        WhalerDeck.Add(new Unit(id++, 7, "name whaler", "this is what this card can do", null, "Whaler", "img 1", true, Role.Agile));
+        WhalerDeck.Add(new Unit(id++, 3, "name whaler", "this is what this card can do", null, "Whaler", "img 1", false, Role.Siege));
+        WhalerDeck.Add(new Unit(id++, 4, "name whaler", "this is what this card can do", null, "Whaler", "img 1", false, Role.Range));
+        WhalerDeck.Add(new Unit(id++, 6, "name whaler", "this is what this card can do", null, "Whaler", "img 1", false, Role.Agile));
+        WhalerDeck.Add(new Unit(id++, 5, "name whaler", "this is what this card can do", null, "Whaler", "img 1", false, Role.Mele));
+        WhalerDeck.Add(new Unit(id++, 2, "name whaler", "this is what this card can do", null, "Whaler", "img 1", false, Role.Range));
+        WhalerDeck.Add(new Unit(id++, 2, "name whaler", "this is what this card can do", null, "Whaler", "img 1", false, Role.Mele));
+        WhalerDeck.Add(new Booster(id++, "name whaler", "this is what this card can do", null, "Whaler", "img 1"));
+        WhalerDeck.Add(new Booster(id++, "name whaler", "this is what this card can do", null, "Whaler", "img 1"));
+        WhalerDeck.Add(new Decoy(id++, "name whaler", "this is what this card can do", null, "Whaler", "img 1"));
+        WhalerDeck.Add(new Decoy(id++, "name whaler", "this is what this card can do", null, "Whaler", "img 1"));
+        WhalerDeck.Add(new Weather(id++, "name whaler", "this is what this card can do", null, "Whaler", "img 1"));
+        WhalerDeck.Add(new Weather(id++, "name whaler", "this is what this card can do", null, "Whaler", "img 1"));
+        WhalerDeck.Add(new Clearing(id++, "name whaler", "this is what this card can do", null, "Whaler", "img 1"));
 
-        PirateDeck.Add(new Unit(id++, 9, "name pirate", "this is what this card can do", "eff", "Pirate", "img 1", true, Role.Mele));
-        PirateDeck.Add(new Unit(id++, 8, "name pirate", "this is what this card can do", "eff", "Pirate", "img 1", true, Role.Siege));
-        PirateDeck.Add(new Unit(id++, 10, "name pirate", "this is what this card can do", "eff", "Pirate", "img 1", true, Role.Mele));
-        PirateDeck.Add(new Unit(id++, 7, "name pirate", "this is what this card can do", "eff", "Pirate", "img 1", true, Role.Agile));
-        PirateDeck.Add(new Unit(id++, 3, "name pirate", "this is what this card can do", "eff", "Pirate", "img 1", false, Role.Siege));
-        PirateDeck.Add(new Unit(id++, 4, "name pirate", "this is what this card can do", "eff", "Pirate", "img 1", false, Role.Range));
-        PirateDeck.Add(new Unit(id++, 6, "name pirate", "this is what this card can do", "eff", "Pirate", "img 1", false, Role.Agile));
-        PirateDeck.Add(new Unit(id++, 5, "name pirate", "this is what this card can do", "eff", "Pirate", "img 1", false, Role.Mele));
-        PirateDeck.Add(new Unit(id++, 2, "name pirate", "this is what this card can do", "eff", "Pirate", "img 1", false, Role.Range));
-        PirateDeck.Add(new Unit(id++, 2, "name pirate", "this is what this card can do", "eff", "Pirate", "img 1", false, Role.Mele));
-        PirateDeck.Add(new Booster(id++, "name pirate", "this is what this card can do", "eff", "Pirate", "img 1"));
-        PirateDeck.Add(new Booster(id++, "name pirate", "this is what this card can do", "eff", "Pirate", "img 1"));
-        PirateDeck.Add(new Decoy(id++, "name pirate", "this is what this card can do", "eff", "Pirate", "img 1"));
-        PirateDeck.Add(new Decoy(id++, "name pirate", "this is what this card can do", "eff", "Pirate", "img 1"));
-        PirateDeck.Add(new Weather(id++, "name pirate", "this is what this card can do", "eff", "Pirate", "img 1"));
-        PirateDeck.Add(new Weather(id++, "name pirate", "this is what this card can do", "eff", "Pirate", "img 1"));
-        PirateDeck.Add(new Clearing(id++, "name pirate", "this is what this card can do", "eff", "Pirate", "img 1"));
+        PirateDeck.Add(new Unit(id++, 9, "name pirate", "this is what this card can do", null, "Pirate", "img 1", true, Role.Mele));
+        PirateDeck.Add(new Unit(id++, 8, "name pirate", "this is what this card can do", null, "Pirate", "img 1", true, Role.Siege));
+        PirateDeck.Add(new Unit(id++, 10, "name pirate", "this is what this card can do", null, "Pirate", "img 1", true, Role.Mele));
+        PirateDeck.Add(new Unit(id++, 7, "name pirate", "this is what this card can do", null, "Pirate", "img 1", true, Role.Agile));
+        PirateDeck.Add(new Unit(id++, 3, "name pirate", "this is what this card can do", null, "Pirate", "img 1", false, Role.Siege));
+        PirateDeck.Add(new Unit(id++, 4, "name pirate", "this is what this card can do", null, "Pirate", "img 1", false, Role.Range));
+        PirateDeck.Add(new Unit(id++, 6, "name pirate", "this is what this card can do", null, "Pirate", "img 1", false, Role.Agile));
+        PirateDeck.Add(new Unit(id++, 5, "name pirate", "this is what this card can do", null, "Pirate", "img 1", false, Role.Mele));
+        PirateDeck.Add(new Unit(id++, 2, "name pirate", "this is what this card can do", null, "Pirate", "img 1", false, Role.Range));
+        PirateDeck.Add(new Unit(id++, 2, "name pirate", "this is what this card can do", null, "Pirate", "img 1", false, Role.Mele));
+        PirateDeck.Add(new Booster(id++, "name pirate", "this is what this card can do", null, "Pirate", "img 1"));
+        PirateDeck.Add(new Booster(id++, "name pirate", "this is what this card can do", null, "Pirate", "img 1"));
+        PirateDeck.Add(new Decoy(id++, "name pirate", "this is what this card can do", null, "Pirate", "img 1"));
+        PirateDeck.Add(new Decoy(id++, "name pirate", "this is what this card can do", null, "Pirate", "img 1"));
+        PirateDeck.Add(new Weather(id++, "name pirate", "this is what this card can do", null, "Pirate", "img 1"));
+        PirateDeck.Add(new Weather(id++, "name pirate", "this is what this card can do", null, "Pirate", "img 1"));
+        PirateDeck.Add(new Clearing(id++, "name pirate", "this is what this card can do", null, "Pirate", "img 1"));
 
-        NeutralDeck.Add(new Unit(id++, 9, "name neutral", "this is what this card can do", "eff", "Neutral", "img 1", true, Role.Range));
-        NeutralDeck.Add(new Unit(id++, 7, "name neutral", "this is what this card can do", "eff", "Neutral", "img 1", true, Role.Mele));
-        NeutralDeck.Add(new Unit(id++, 6, "name neutral", "this is what this card can do", "eff", "Neutral", "img 1", false, Role.Mele));
-        NeutralDeck.Add(new Unit(id++, 4, "name neutral", "this is what this card can do", "eff", "Neutral", "img 1", false, Role.Siege));
-        NeutralDeck.Add(new Unit(id++, 3, "name neutral", "this is what this card can do", "eff", "Neutral", "img 1", false, Role.Range));
-        NeutralDeck.Add(new Unit(id++, 2, "name neutral", "this is what this card can do", "eff", "Neutral", "img 1", false, Role.Range));
-        NeutralDeck.Add(new Decoy(id++, "name neutral", "this is what this card can do", "eff", "Neutral", "img 1"));
-        NeutralDeck.Add(new Decoy(id++, "name neutral", "this is what this card can do", "eff", "Neutral", "img 1"));
-        NeutralDeck.Add(new Weather(id++, "name neutral", "this is what this card can do", "eff", "Neutral", "img 1"));
-        NeutralDeck.Add(new Clearing(id++, "name neutral", "this is what this card can do", "eff", "Neutral", "img 1"));
-        NeutralDeck.Add(new Booster(id++, "name neutral", "this is what this card can do", "eff", "Neutral", "img 1"));
-        NeutralDeck.Add(new Booster(id++, "name neutral", "this is what this card can do", "eff", "Neutral", "img 1"));
+        NeutralDeck.Add(new Unit(id++, 9, "name neutral", "this is what this card can do", null, "Neutral", "img 1", true, Role.Range));
+        NeutralDeck.Add(new Unit(id++, 7, "name neutral", "this is what this card can do", null, "Neutral", "img 1", true, Role.Mele));
+        NeutralDeck.Add(new Unit(id++, 6, "name neutral", "this is what this card can do", null, "Neutral", "img 1", false, Role.Mele));
+        NeutralDeck.Add(new Unit(id++, 4, "name neutral", "this is what this card can do", null, "Neutral", "img 1", false, Role.Siege));
+        NeutralDeck.Add(new Unit(id++, 3, "name neutral", "this is what this card can do", null, "Neutral", "img 1", false, Role.Range));
+        NeutralDeck.Add(new Unit(id++, 2, "name neutral", "this is what this card can do", null, "Neutral", "img 1", false, Role.Range));
+        NeutralDeck.Add(new Decoy(id++, "name neutral", "this is what this card can do", null, "Neutral", "img 1"));
+        NeutralDeck.Add(new Decoy(id++, "name neutral", "this is what this card can do", null, "Neutral", "img 1"));
+        NeutralDeck.Add(new Weather(id++, "name neutral", "this is what this card can do", null, "Neutral", "img 1"));
+        NeutralDeck.Add(new Clearing(id++, "name neutral", "this is what this card can do", null, "Neutral", "img 1"));
+        NeutralDeck.Add(new Booster(id++, "name neutral", "this is what this card can do", null, "Neutral", "img 1"));
+        NeutralDeck.Add(new Booster(id++, "name neutral", "this is what this card can do", null, "Neutral", "img 1"));
 
         AvailableDecks.Add("Seaborn", SeabornDeck);
         AvailableDecks.Add("Whaler", WhalerDeck);
@@ -163,7 +164,7 @@ public abstract class Card
     public string CardName;
     public string CardFaction;
     public string EffectText; //texto del efecto vs efecto en codigo
-    public string CardEffect;
+    public List<Effect> CardEffect;
     public Role thisRole;
     public int instancesLeft {get; set;}
 
@@ -183,7 +184,7 @@ public abstract class Card
 public class LeaderCard : Card
 {
     public bool Activated {get; set;}
-    public LeaderCard(int id, string cardName, string effectText, string cardEffect, string faction, string image)
+    public LeaderCard(int id, string cardName, string effectText, List<Effect> cardEffect, string faction, string image)
     {
         //Functional assignment
         ID = id;
@@ -215,7 +216,7 @@ public class Unit : Card
 {
     public bool Gold;
 
-    public Unit (int id, int power, string cardName, string effectText, string cardEffect, string faction, string image, bool gold, Role role)
+    public Unit (int id, int power, string cardName, string effectText, List<Effect> cardEffect, string faction, string image, bool gold, Role role)
     {
         //Functional assignment
         ID = id;
@@ -247,7 +248,7 @@ public class Unit : Card
 
 public class Decoy : Card
 {
-    public Decoy (int id, string cardName, string effectText, string cardEffect, string faction, string image)
+    public Decoy (int id, string cardName, string effectText, List<Effect> cardEffect, string faction, string image)
     {
         //Functional assignment
         ID = id;
@@ -277,7 +278,7 @@ public class Decoy : Card
 
 public class Booster : Card
 {
-    public Booster (int id, string cardName, string effectText, string cardEffect, string faction, string image)
+    public Booster (int id, string cardName, string effectText, List<Effect> cardEffect, string faction, string image)
     {
         //Functional assignment
         ID = id;
@@ -321,7 +322,7 @@ public enum Role
 
 public class Weather : Card
 {
-    public Weather(int id, string cardName, string effectText, string cardEffect, string faction, string image)
+    public Weather(int id, string cardName, string effectText, List<Effect> cardEffect, string faction, string image)
     {
         //Functional assignment
         ID = id;
@@ -351,7 +352,7 @@ public class Weather : Card
 
 public class Clearing : Card
 {
-    public Clearing(int id, string cardName, string effectText, string cardEffect, string faction, string image)
+    public Clearing(int id, string cardName, string effectText, List<Effect> cardEffect, string faction, string image)
     {
         //Functional assignment
         ID = id;
@@ -378,4 +379,27 @@ public class Clearing : Card
     }
 
 }
+#endregion
+
+#region  Effects
+
+public class Effect
+{
+    public string Name {get; private set;}
+    public Dictionary <string, string> Params {get; set;}
+    AST_Action Action {get; set;}
+
+    public Effect (string name, Dictionary <string, string> _params, AST_Action action)
+    {
+        Name = name;
+        Params = _params;
+        Action = action;
+    }
+
+    public void Activate()
+    {
+        
+    }
+}
+
 #endregion

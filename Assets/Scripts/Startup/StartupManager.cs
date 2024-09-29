@@ -23,6 +23,11 @@ public class StartupManager : MonoBehaviour
             GameObject cardDatabaseObject = new GameObject("DisplayCardDatabase");
             cardDatabaseObject.AddComponent<DisplayCardDatabase>();
         }
+        if (Context.Instance == null)
+        {
+            GameObject cardDatabaseObject = new GameObject("Context");
+            cardDatabaseObject.AddComponent<Context>();
+        }
     }
 
     void LoadMainMenu()

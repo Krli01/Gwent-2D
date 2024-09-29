@@ -1,0 +1,77 @@
+
+//ESTRUCTURAS Q CONTIENEN KEYWORDS ELIMINADAS: EffectBody, ok CardBody, EffectInvocation, PostAction
+
+Program ::= (Effect | Card)*
+
+Effect ::= "effect" "{" EffectBody "}"
+
+EffectBody ::= "Name:" STRING ","
+               ["Params:" "{" [ParamDeclaration ("," ParamDeclaration)*] "}" ","]
+               "Action:" Action 
+                
+ParamDeclaration ::= IDENTIFIER ":" ("Number" | "String" | "Bool")
+
+Action ::= "(" IDENTIFIER "," IDENTIFIER ")" "=>" StatementBlock
+
+StatementBlock ::= "{" (Statement ";")+ "}"
+
+Statement ::= ForLoop | WhileLoop | AssignStatement | FunctionCall
+
+ForLoop ::= "for" IDENTIFIER "in" (IDENTIFIER |PropertyAccess) StatementBlock
+
+WhileLoop ::= "while" "(" Expression ")" StatementBlock
+
+AssignStatement ::= (IDENTIFIER | PropertyAccess) ("=" | "+=" | "-=") (Expression | FunctionCall)
+
+FunctionCall ::= PropertyAccess "(" [Expression | Predicate] ")"
+
+Card ::= "card" "{" CardBody "}"
+
+CardBody ::= "Type:" STRING ","
+             "Name:" STRING ","
+             "Faction:" STRING ","
+             ["Power:" NUMBER ","]
+             ["Range:" "[" STRING ("," STRING)* "]" ","]
+             "OnActivation:" "[" EffectActivation+ "]" ","
+
+EffectActivation ::= "{" EffectInvocation "}"
+
+EffectInvocation ::= "Effect:" (STRING | "{" "Name:" STRING "," [(ParamAssignment)*] "}" ",") 
+                     [Selector ","]
+                     [PostAction]
+
+ParamAssignment ::= IDENTIFIER ":" Expression ","
+
+Selector ::= "Selector:" "{" 
+             ["Source:" STRING ","]
+             ["Single:" BOOLEAN ","]
+             "Predicate:" Predicate
+             "}"
+
+Predicate ::= "(" IDENTIFIER ")" "=>" BooleanExpression
+
+PostAction ::= "PostAction:" 
+               "{" 
+               "Type:" STRING ","
+               ["Params:" "{" [(ParamAssignment)*] "}" ","]
+               [Selector ","]
+               [PostAction]
+               "}"
+
+Expression ::= BooleanExpression
+
+BooleanExpression ::= ComparisonExpression (("&&" | "||") ComparisonExpression)*
+
+ComparisonExpression ::= ArithmeticExpression (("<" | ">" | "==" | ">=" | "<=") ArithmeticExpression)*
+
+ArithmeticExpression ::= Term (("+" | "-") Term)*
+
+Term ::= Factor (("*" | "/" | "^" | @ | @@) Factor)*
+
+Factor ::= [("--" | "!" | "++")] (NUMBER | STRING | BOOLEAN | IDENTIFIER | "(" Expression ")" | PropertyAccess)
+
+PropertyAccess ::= IDENTIFIER ("." IDENTIFIER)+  
+STRING ::= '"' [^"]* '"'
+NUMBER ::= [0-9]+ ("." [0-9]+)?
+BOOLEAN ::= "true" | "false"
+IDENTIFIER ::= [a-zA-Z_][a-zA-Z0-9_]*
