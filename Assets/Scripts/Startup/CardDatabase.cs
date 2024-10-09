@@ -164,12 +164,13 @@ public abstract class Card
     public string CardName;
     public string CardFaction;
     public string EffectText; //texto del efecto vs efecto en codigo
-    public List<Effect> CardEffect;
+    public List<AST_EffectInvocation> CardEffect;
     public Role thisRole;
     public int instancesLeft {get; set;}
 
     // Visual fields
     public int intPower;
+    public string PowerExtra;
     public string img;
     public Sprite CardImage;
     public Sprite CardRole;
@@ -178,13 +179,24 @@ public abstract class Card
     public Sprite Border;
 
     // Effect activation method
-    public abstract void Activate();
+    public void Activate(IVisitor v, GlobalScope globalScope)
+    {
+        if (CardEffect != null)
+        {
+            foreach (AST_EffectInvocation effect in CardEffect)
+            {
+                effect.Accept(v, globalScope, new Dictionary<string, Result>());
+                PlayerManager.Instance.Player1.battlefield.UpdatePoints();
+                PlayerManager.Instance.Player2.battlefield.UpdatePoints();
+            }
+        }
+    }
 }
 
 public class LeaderCard : Card
 {
     public bool Activated {get; set;}
-    public LeaderCard(int id, string cardName, string effectText, List<Effect> cardEffect, string faction, string image)
+    public LeaderCard(int id, string cardName, string effectText, List<AST_EffectInvocation> cardEffect, string faction, string image)
     {
         //Functional assignment
         ID = id;
@@ -205,18 +217,13 @@ public class LeaderCard : Card
         PowerNum = CardDatabase.factionImages[faction];
         Border = Resources.Load<Sprite> ("small/Gold");
     }
-
-    public override void Activate()
-    {
-        Debug.Log("Activated leader");
-    }
 }
 
 public class Unit : Card
 {
     public bool Gold;
 
-    public Unit (int id, int power, string cardName, string effectText, List<Effect> cardEffect, string faction, string image, bool gold, Role role)
+    public Unit (int id, int power, string cardName, string effectText, List<AST_EffectInvocation> cardEffect, string faction, string image, bool gold, Role role)
     {
         //Functional assignment
         ID = id;
@@ -239,16 +246,11 @@ public class Unit : Card
         Border = gold ? Resources.Load <Sprite>("small/Gold") : Resources.Load <Sprite>("small/Silver");
 
     }
-
-     public override void Activate()
-    {
-        throw new System.NotImplementedException();
-    }
 }
 
 public class Decoy : Card
 {
-    public Decoy (int id, string cardName, string effectText, List<Effect> cardEffect, string faction, string image)
+    public Decoy (int id, string cardName, string effectText, List<AST_EffectInvocation> cardEffect, string faction, string image)
     {
         //Functional assignment
         ID = id;
@@ -269,16 +271,11 @@ public class Decoy : Card
         PowerNum = CardDatabase.powerImages[0];
         Border = Resources.Load<Sprite> ("small/Bronze");
     }
-
-     public override void Activate()
-    {
-        throw new System.NotImplementedException();
-    }
 }
 
 public class Booster : Card
 {
-    public Booster (int id, string cardName, string effectText, List<Effect> cardEffect, string faction, string image)
+    public Booster (int id, string cardName, string effectText, List<AST_EffectInvocation> cardEffect, string faction, string image)
     {
         //Functional assignment
         ID = id;
@@ -299,12 +296,6 @@ public class Booster : Card
         PowerNum = CardDatabase.powerImages[1];
         Border = Resources.Load<Sprite> ("small/Bronze");
     }
-
-     public override void Activate()
-    {
-        throw new System.NotImplementedException();
-    }
-
 }
 
 public enum Role
@@ -322,7 +313,7 @@ public enum Role
 
 public class Weather : Card
 {
-    public Weather(int id, string cardName, string effectText, List<Effect> cardEffect, string faction, string image)
+    public Weather(int id, string cardName, string effectText, List<AST_EffectInvocation> cardEffect, string faction, string image)
     {
         //Functional assignment
         ID = id;
@@ -343,16 +334,11 @@ public class Weather : Card
         PowerNum = null;
         Border = Resources.Load<Sprite> ("small/Bronze");
     }
-    public override void Activate()
-    {
-        throw new System.NotImplementedException();
-    }
-
 }
 
 public class Clearing : Card
 {
-    public Clearing(int id, string cardName, string effectText, List<Effect> cardEffect, string faction, string image)
+    public Clearing(int id, string cardName, string effectText, List<AST_EffectInvocation> cardEffect, string faction, string image)
     {
         //Functional assignment
         ID = id;
@@ -373,11 +359,6 @@ public class Clearing : Card
         PowerNum = null;
         Border = Resources.Load<Sprite> ("small/Bronze");
     }
-    public override void Activate()
-    {
-        throw new System.NotImplementedException();
-    }
-
 }
 #endregion
 
@@ -386,19 +367,14 @@ public class Clearing : Card
 public class Effect
 {
     public string Name {get; private set;}
-    public Dictionary <string, string> Params {get; set;}
-    AST_Action Action {get; set;}
+    public Dictionary <string, string> Params {get; private set;}
+    public AST_Action Action {get; private set;}
 
     public Effect (string name, Dictionary <string, string> _params, AST_Action action)
     {
         Name = name;
         Params = _params;
         Action = action;
-    }
-
-    public void Activate()
-    {
-        
     }
 }
 

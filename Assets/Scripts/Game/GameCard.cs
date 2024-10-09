@@ -12,9 +12,9 @@ public class GameCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     public GameObject prefab;
     public Card BaseCard {get; private set;}
     public Player Owner {get; private set;}
+    public float Power {get; private set;}
 
     public bool showBack;
-    public float Power;
     //private float PowerExtra;
     bool isSelected;
     public Role role;
@@ -60,9 +60,29 @@ public class GameCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         BaseCard = baseCard;
     }
     
+    public void SetPower(float power)
+    {
+        Power = power;
+        //Debug.LogError("Power: "+ Power + ", power: "+ power);
+        if (Power < 0) Power = 0;
+        float diff = Power-BaseCard.Power;
+        if (diff > 0)
+        {
+            BaseCard.PowerExtra = "+"+diff;
+        }
+        else if (diff < 0)
+        {
+            BaseCard.PowerExtra = diff.ToString();
+        }
+    }
     public void ActivateLeader()
     {
-        if (BaseCard is LeaderCard) BaseCard.Activate();
+        if (BaseCard is LeaderCard)
+        {
+            GlobalScope globalScope = new GlobalScope(Context.Instance.AvailableEffects);
+            // globalScope.thisCard = this;
+            BaseCard.Activate(Game.visitor, globalScope);
+        }
         TurnSystem.Instance.Active.ActivateLeader.interactable = false;
         TurnSystem.Instance.TakeAction();
         DeSelect();
@@ -70,7 +90,6 @@ public class GameCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        //Debug.Log("enter");
         if (transform.parent == TurnSystem.Instance.Active.thisHand.transform && !isSelected)
         {
             transform.position += popUpOnHover;
@@ -214,6 +233,10 @@ public class GameCard : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         clearingCard.transform.localPosition = Vector3.zero;            
         Game.Selected.Clear();
         TurnSystem.Instance.TakeAction();
+
+        GlobalScope globalScope = new GlobalScope(Context.Instance.AvailableEffects);
+        // globalScope.thisCard = clearingCard;
+        clearingCard.BaseCard.Activate(Game.visitor, globalScope);
                 
         //fix visual bug: clearingCard must be killed after 0.7s delay
         Owner.graveyard.SendToGraveyard(this);

@@ -182,4 +182,50 @@ public class Battlefield : MonoBehaviour
         }
         return sum;
     }
+
+    public List<GameCard> GetBattlefield()
+    {
+        List<GameCard> Battlefield = new List<GameCard>();
+
+        foreach (CardSlot slot in MeleRow)
+        {
+            if (slot.transform.childCount > 0)
+            {
+                GameCard c = slot.GetComponentInChildren<GameCard>();
+                Battlefield.Add(c);
+            }
+        }
+        foreach (CardSlot slot in RangeRow)
+        {
+            if (slot.transform.childCount > 0)
+            {
+                GameCard c = slot.GetComponentInChildren<GameCard>();
+                Battlefield.Add(c);
+            }
+        }
+        foreach (CardSlot slot in SiegeRow)
+        {
+            if (slot.transform.childCount > 0)
+            {
+                GameCard c = slot.GetComponentInChildren<GameCard>();
+                Battlefield.Add(c);
+            }
+        }
+
+        return Battlefield;
+    }
+
+    public List<GameCard> GetWeather()
+    {
+        List<GameCard> Weather = new List<GameCard>();
+        foreach (CardSlot slot in WeatherZone)
+        {
+            if (slot.transform.childCount > 0)
+            {
+                GameCard c = slot.GetComponentInChildren<GameCard>();
+                Weather.Add(c);
+            }
+        }
+        return Weather;
+    }
 }

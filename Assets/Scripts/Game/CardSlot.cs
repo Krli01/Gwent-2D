@@ -34,6 +34,11 @@ public class CardSlot : MonoBehaviour, IPointerClickHandler, IPointerEnterHandle
         card.transform.localPosition = Vector3.zero;
         card.DeSelect();
         TurnSystem.Instance.Active.battlefield.DisableAllZones();
+
+        GlobalScope globalScope = new GlobalScope(Context.Instance.AvailableEffects);
+        globalScope.thisCard = card;
+        card.BaseCard.Activate(Game.visitor, globalScope);
+
         TurnSystem.Instance.Active.battlefield.UpdatePoints();
         TurnSystem.Instance.TakeAction();
     }

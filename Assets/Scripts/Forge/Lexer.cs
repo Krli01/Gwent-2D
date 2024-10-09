@@ -103,7 +103,7 @@ public class Lexer
                     inputText = inputText.Substring(firstSeparator.Length);
                     return GetNextToken();
                 }
-                if (Regex.Match(firstSeparator.Value, @"[*/^&|!]|@@|@|\+\+|\+|(\-\-)|\-").Success)
+                if (Regex.Match(firstSeparator.Value, @"[*/^&|!]|@@|@|\+|(\-\-)|\-").Success)
                 {    
                     inputText = inputText.Substring(firstSeparator.Length);
                     if (firstSeparator.Value == "/" && inputText[0] == '/')
@@ -178,12 +178,12 @@ public class Lexer
             if(inputText[0] == '+')
             {
                 inputText = inputText.Substring(1);
-                return new Token(TokenDatabase.Instance.Operators["++"], match.Value, currentLine);
+                return new Token(TokenDatabase.Instance.Operators["++"], "++", currentLine);
             }
             if(inputText[0] == '=')
             {
                 inputText = inputText.Substring(1);
-                return new Token(TokenDatabase.Instance.Symbols["+="], match.Value, currentLine);
+                return new Token(TokenDatabase.Instance.Symbols["+="], "+=", currentLine);
             }
         }
         if (match.Value == "-")
@@ -196,7 +196,7 @@ public class Lexer
             if(inputText[0] == '=')
             {
                 inputText = inputText.Substring(1);
-                return new Token(TokenDatabase.Instance.Symbols["-="], match.Value, currentLine);
+                return new Token(TokenDatabase.Instance.Symbols["-="], "-=", currentLine);
             }
         }
         if (match.Value == "&")
@@ -204,7 +204,7 @@ public class Lexer
             if(inputText[0] == '&')
             {
                 inputText = inputText.Substring(1);
-                return new Token(TokenDatabase.Instance.Operators["&&"], match.Value, currentLine);
+                return new Token(TokenDatabase.Instance.Operators["&&"], "&&", currentLine);
             }
         }
         if (match.Value == "|")
@@ -212,7 +212,7 @@ public class Lexer
             if(inputText[0] == '|')
             {
                 inputText = inputText.Substring(1);
-                return new Token(TokenDatabase.Instance.Operators["||"], match.Value, currentLine);
+                return new Token(TokenDatabase.Instance.Operators["||"], "||", currentLine);
             }
         }
         TokenType type = TokenDatabase.Instance.Operators[match.Value];

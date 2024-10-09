@@ -11,6 +11,8 @@ public class Game : MonoBehaviour
 {
     public static bool drawPhase;
     public static List<GameCard> Selected;
+
+    public static IVisitor visitor;
     
     void Start()
     {
@@ -20,9 +22,17 @@ public class Game : MonoBehaviour
 
     IEnumerator StartGame()
     {
+        visitor = new ExecutionVisitor();
+        
         PlayerManager.Instance.Player1.Assign(GameManager.Instance.Player1Name, GameManager.Instance.Player1Faction);
         PlayerManager.Instance.Player2.Assign(GameManager.Instance.Player2Name, GameManager.Instance.Player2Faction);
         RoundSystem.Instance.Enable(PlayerManager.Instance.Player1, PlayerManager.Instance.Player2);
+
+        Context.Instance.Players = new List<Player>
+        {
+            PlayerManager.Instance.Player1,
+            PlayerManager.Instance.Player2,
+        };
         
         RoundSystem.Instance.StartDrawPhase();
         yield return new WaitForSeconds(3);
@@ -46,5 +56,11 @@ public class Game : MonoBehaviour
     public void RestartCurrent()
     {
         
+    }
+
+    public static GameCard GetNewCard()
+    {
+        GameCard gameCard = GameObject.Instantiate(TurnSystem.Instance.Active.Deck.cardPrefab, TurnSystem.Instance.Active.overflow.transform.position, TurnSystem.Instance.Active.overflow.transform.rotation);
+        return gameCard;
     }
 }

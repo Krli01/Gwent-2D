@@ -13,7 +13,7 @@ public class Parser
 
     public AST Run(List<Token> tokens)
     {
-        Error = "";
+        Error = "unhandled parser error";
         if (tokens == null || tokens.Count == 0) return new AST_ProgramVoid();
         Tokens = tokens;
         currentToken = Tokens[0];
@@ -74,7 +74,7 @@ public class Parser
                 Items.Add(card);
             }
         }
-
+        Debug.Log(Items.Count);
         return new AST_Program(Items);
     }
 
@@ -86,6 +86,7 @@ public class Parser
         if(!Eat(TokenType.L_BRACE)) return null;
 
         AST_EffectBody Body = EffectBody();
+        //Debug.Log(Body == null);
         if (Body == null) return null;
         if (!Eat(TokenType.R_BRACE)) return null;
 
@@ -110,6 +111,7 @@ public class Parser
             if (!Eat(TokenType.COLON)) return null;
             if(!Eat(TokenType.L_BRACE)) return null;
             Params = EffectParams();
+            Debug.Log($"Params null: " + (Params == null));
             if (Params == null) return null;
             if(!Eat(TokenType.R_BRACE)) return null; 
             if(!Eat(TokenType.COMMA)) return null;
@@ -119,6 +121,7 @@ public class Parser
         if(!Eat(TokenType.COLON)) return null;
 
         AST_Action Action = EffectAction();
+        Debug.Log("action null: " + (Action == null)); 
         if (Action == null) return null;
         
         return new AST_EffectBody(Name, Params, Action);
@@ -130,9 +133,10 @@ public class Parser
         while (currentToken.Type != TokenType.R_BRACE)
         {
             AST_ParamDeclaration newParam = ParamDeclaration();
+            Debug.Log($"null newParam: {newParam == null}");
             if (newParam == null) return null;
             else _params.Add(newParam);
-            //Debug.Log($"Param created: {newParam.Name}, {newParam.Type}");
+            //Debug.Log($"Param created: {newParam.Name}, {newParam.type}");
 
             if(currentToken.Type != TokenType.COMMA) break;
             Eat(TokenType.COMMA);
@@ -144,9 +148,11 @@ public class Parser
     private AST_ParamDeclaration ParamDeclaration()
     {
         string name = currentToken.Lexeme;
+        Debug.Log(name);
         if (!Eat(TokenType.IDENTIFIER)) return null;
         if (!Eat(TokenType.COLON)) return null;
 
+        Debug.Log(currentToken.Type);
         if (currentToken.Type == TokenType.KW_NUMBER)
         {
             Eat(TokenType.KW_NUMBER);
@@ -162,7 +168,7 @@ public class Parser
             Eat(TokenType.KW_BOOLEAN);
             return new AST_ParamDeclaration(name, "boolean");
         }
-
+        Error = $"Line {currentToken.Line}: Invalid type '{currentToken.Lexeme}'";
         return null;
     }
 
@@ -242,13 +248,15 @@ public class Parser
 
                     else if(currentToken.Type == TokenType.ASSIGN || currentToken.Type == TokenType.PLUS_ASSIGN || currentToken.Type == TokenType.MINUS_ASSIGN)
                     {
-                        AST_AssignStatement assignStatement = AssignStatement(prop);
-                        if (assignStatement == null)
-                        {
-                        //Debug.Log("assign null");
-                        return null;
-                        } 
-                        Actions.Add(assignStatement); 
+                        AST_BinaryAssignStatement binaryAssignStatement = BinaryAssignStatement(prop);
+                        if (binaryAssignStatement == null) return null; 
+                        Actions.Add(binaryAssignStatement); 
+                    }
+                    else if (currentToken.Type == TokenType.U_DECREMENT || currentToken.Type == TokenType.U_INCREMENT)
+                    {
+                        AST_UnaryAssignStatement unaryAssignStatement = UnaryAssignStatement(prop);
+                        if (unaryAssignStatement == null) return null;
+                        Actions.Add(unaryAssignStatement);
                     }
 
                     else
@@ -260,9 +268,15 @@ public class Parser
                 
                 else if(currentToken.Type == TokenType.ASSIGN || currentToken.Type == TokenType.PLUS_ASSIGN || currentToken.Type == TokenType.MINUS_ASSIGN)
                 {
-                    AST_AssignStatement assignStatement = AssignStatement(id);
-                    if (assignStatement == null) return null;
-                    Actions.Add(assignStatement); 
+                    AST_BinaryAssignStatement binaryAssignStatement = BinaryAssignStatement(id);
+                    if (binaryAssignStatement == null) return null;
+                    Actions.Add(binaryAssignStatement); 
+                }
+                else if (currentToken.Type == TokenType.U_DECREMENT || currentToken.Type == TokenType.U_INCREMENT)
+                {
+                    AST_UnaryAssignStatement unaryAssignStatement = UnaryAssignStatement(id);
+                    if (unaryAssignStatement == null) return null;
+                    Actions.Add(unaryAssignStatement);
                 }
 
                 else
@@ -271,6 +285,13 @@ public class Parser
                         return null;
                     }
 
+            }
+
+            else if (currentToken.Type == TokenType.NOT || currentToken.Type == TokenType.U_DECREMENT || currentToken.Type == TokenType.U_INCREMENT)
+            {
+                AST_UnaryAssignStatement unaryAssignStatement = UnaryAssignStatement();
+                if (unaryAssignStatement == null) return null;
+                Actions.Add(unaryAssignStatement);
             }
 
             if (!Eat(TokenType.SEMICOLON)) return null;
@@ -325,7 +346,7 @@ public class Parser
         return new AST_PropertyAccess(prop);
     }
 
-    private AST_AssignStatement AssignStatement(AST_Identifier id)
+    private AST_BinaryAssignStatement BinaryAssignStatement(AST_Identifier id)
     {   
         if (currentToken.Type == TokenType.ASSIGN)
         {
@@ -337,9 +358,9 @@ public class Parser
             {
                 AST_FunctionCall func = FunctionCall((AST_PropertyAccess)value.Type());
                 if (func == null) return null;
-                return new AST_AssignStatement(id, "=", func);
+                return new AST_BinaryAssignStatement(id, "=", func);
             }
-            return new AST_AssignStatement(id, "=", value);
+            return new AST_BinaryAssignStatement(id, "=", value);
         }
         if (currentToken.Type == TokenType.PLUS_ASSIGN)
         {
@@ -350,9 +371,9 @@ public class Parser
             {
                 AST_FunctionCall func = FunctionCall((AST_PropertyAccess)value.Type());
                 if (func == null) return null;
-                return new AST_AssignStatement(id, "+=", func);
+                return new AST_BinaryAssignStatement(id, "+=", func);
             }
-            return new AST_AssignStatement(id, "+=", value);
+            return new AST_BinaryAssignStatement(id, "+=", value);
         }
         if (currentToken.Type == TokenType.MINUS_ASSIGN)
         {
@@ -363,15 +384,15 @@ public class Parser
             {
                 AST_FunctionCall func = FunctionCall((AST_PropertyAccess)value.Type());
                 if (func == null) return null;
-                return new AST_AssignStatement(id, "-=", func);
+                return new AST_BinaryAssignStatement(id, "-=", func);
             }
-            return new AST_AssignStatement(id, "-=", value);
+            return new AST_BinaryAssignStatement(id, "-=", value);
         }
         
         return null;
     }
 
-     private AST_AssignStatement AssignStatement(AST_PropertyAccess id)
+     private AST_BinaryAssignStatement BinaryAssignStatement(AST_PropertyAccess id)
     {   
         //Debug.Log("assign stmt prop");
         if (currentToken.Type == TokenType.ASSIGN)
@@ -383,9 +404,9 @@ public class Parser
             {
                 AST_FunctionCall func = FunctionCall((AST_PropertyAccess)value.Type());
                 if (func == null) return null;
-                return new AST_AssignStatement(id, "=", func);
+                return new AST_BinaryAssignStatement(id, "=", func);
             }
-            return new AST_AssignStatement(id, "=", value);
+            return new AST_BinaryAssignStatement(id, "=", value);
         }
         if (currentToken.Type == TokenType.PLUS_ASSIGN)
         {
@@ -396,9 +417,9 @@ public class Parser
             {
                 AST_FunctionCall func = FunctionCall((AST_PropertyAccess)value.Type());
                 if (func == null) return null;
-                return new AST_AssignStatement(id, "+=", func);
+                return new AST_BinaryAssignStatement(id, "+=", func);
             }
-            return new AST_AssignStatement(id, "+=", value);
+            return new AST_BinaryAssignStatement(id, "+=", value);
         }
         if (currentToken.Type == TokenType.MINUS_ASSIGN)
         {
@@ -411,12 +432,59 @@ public class Parser
             {
                 AST_FunctionCall func = FunctionCall((AST_PropertyAccess)value.Type());
                 if (func == null) return null;
-                return new AST_AssignStatement(id, "-=", func);
+                return new AST_BinaryAssignStatement(id, "-=", func);
             }
-            return new AST_AssignStatement(id, "-=", value);
+            return new AST_BinaryAssignStatement(id, "-=", value);
         }
   
         return null;
+    }
+
+    private AST_UnaryAssignStatement UnaryAssignStatement()
+    {
+        string op = currentToken.Lexeme;
+
+        if (currentToken.Type == TokenType.U_DECREMENT) Eat(TokenType.U_DECREMENT);
+        else if (currentToken.Type == TokenType.U_INCREMENT) Eat(TokenType.U_INCREMENT);
+        else Eat(TokenType.NOT); // (currentToken.Type == TokenType.NOT)
+
+        AST_Identifier id = new AST_Identifier(currentToken.Lexeme);
+        if (!Eat(TokenType.IDENTIFIER)) return null;
+        if (currentToken.Type == TokenType.DOT)
+        {
+            AST_PropertyAccess prop = PropertyAccess(id);
+            if (prop == null) return null;
+            return new AST_UnaryAssignStatement(op, prop);
+        }
+        return new AST_UnaryAssignStatement(op, id);
+    }
+
+    private AST_UnaryAssignStatement UnaryAssignStatement(AST_Identifier id)
+    {
+        if (currentToken.Type == TokenType.U_DECREMENT)
+        {
+            Eat(TokenType.U_DECREMENT);
+            return new AST_UnaryAssignStatement("--", id);
+        }
+        else // (currentToken.Type == TokenType.U_INCREMENT)
+        {
+            Eat(TokenType.U_INCREMENT);
+            return new AST_UnaryAssignStatement("++", id);
+        }
+    }
+
+    private AST_UnaryAssignStatement UnaryAssignStatement(AST_PropertyAccess prop)
+    {
+        if (currentToken.Type == TokenType.U_DECREMENT)
+        {
+            Eat(TokenType.U_DECREMENT);
+            return new AST_UnaryAssignStatement("--", prop);
+        }
+        else // (currentToken.Type == TokenType.U_INCREMENT)
+        {
+            Eat(TokenType.U_INCREMENT);
+            return new AST_UnaryAssignStatement("++", prop);
+        }
     }
 
     private AST_ForLoop ForLoop()
@@ -432,28 +500,27 @@ public class Parser
         if (currentToken.Type == TokenType.DOT)
         {
             AST_PropertyAccess collection = PropertyAccess(id);
-            if (collection == null) 
+            if (collection == null) return null;
+
+            if (currentToken.Type == TokenType.L_PAREN)
             {
-                //Debug.Log("coll null");
-                return null;
+                AST_FunctionCall func = FunctionCall(collection);
+                if (func == null) return null;
+
+                AST_StatementBlock statementsss = StatementBlock();
+                if (statementsss == null) return null;
+
+                return new AST_ForLoop(element, func, statementsss);
             }
 
             AST_StatementBlock statementss = StatementBlock();
-            if (statementss == null)
-            {
-                //Debug.Log("stmts 1 null");
-                return null;
-            }
+            if (statementss == null) return null;
 
             return new AST_ForLoop(element, collection, statementss);
         }
 
         AST_StatementBlock statements = StatementBlock();
-        if (statements == null)
-        {
-                //Debug.Log("stmts 2 null");
-                return null;
-        }
+        if (statements == null) return null;
 
         return new AST_ForLoop(element, id, statements);
     }
@@ -626,24 +693,13 @@ public class Parser
 
     public AST_Factor Factor()
     {
-        if (currentToken.Type == TokenType.NOT)
+        if (currentToken.Type == TokenType.U_DECREMENT || currentToken.Type == TokenType.U_INCREMENT || currentToken.Type == TokenType.NOT)
         {
-            Eat(TokenType.NOT);
-            AST_Factor exp = Factor();
-            return new AST_Factor("!", exp);
+            AST_UnaryAssignFactor UnaryOp = UnaryAssignFactor();
+            if (UnaryOp == null) return null;
+            return new AST_Factor(UnaryOp);
         }
-        if (currentToken.Type == TokenType.U_DECREMENT)
-        {
-            Eat(TokenType.U_DECREMENT);
-            AST_Factor exp = Factor();
-            return new AST_Factor("--", exp);
-        }
-        if (currentToken.Type == TokenType.U_INCREMENT)
-        {
-            Eat(TokenType.U_INCREMENT);
-            AST_Factor exp = Factor();
-            return new AST_Factor("++", exp);
-        }
+        
         if (currentToken.Type == TokenType.NUMBER)
         {
             float num = float.Parse(currentToken.Lexeme);
@@ -651,6 +707,7 @@ public class Parser
             AST_Number numFactor = new AST_Number(num);
             return new AST_Factor(numFactor);
         }
+
         if (currentToken.Type == TokenType.STRING)
         {
             string content = currentToken.Lexeme;
@@ -658,6 +715,7 @@ public class Parser
             AST_String stringFactor = new AST_String(content);
             return new AST_Factor(stringFactor);
         }
+        
         if (currentToken.Type == TokenType.BOOLEAN)
         {
             bool value = bool.Parse(currentToken.Lexeme);
@@ -665,6 +723,7 @@ public class Parser
             AST_Expression boolFactor = new AST_Boolean(value);
             return new AST_Factor(boolFactor);
         }
+
         if (currentToken.Type == TokenType.IDENTIFIER)
         {
             AST_Identifier id = new AST_Identifier(currentToken.Lexeme);
@@ -674,11 +733,26 @@ public class Parser
             {
                 AST_PropertyAccess prop = PropertyAccess(id);
                 if (prop == null) return null;
+
+                if(currentToken.Type == TokenType.U_DECREMENT || currentToken.Type == TokenType.U_INCREMENT)
+                {
+                    AST_UnaryAssignFactor unaryOp = UnaryAssignFactor(prop);
+                    if (unaryOp == null) return null;
+                    return new AST_Factor(unaryOp);
+                }
+
                 return new AST_Factor(prop);
+            }
+            if(currentToken.Type == TokenType.U_DECREMENT || currentToken.Type == TokenType.U_INCREMENT)
+            {
+                AST_UnaryAssignFactor unaryOp = UnaryAssignFactor(id);
+                if (unaryOp == null) return null;
+                return new AST_Factor(unaryOp);
             }
 
             return new AST_Factor(id);    
         }
+        
         if (currentToken.Type == TokenType.L_PAREN)
         {
             Eat(TokenType.L_PAREN);
@@ -688,8 +762,59 @@ public class Parser
 
             return new AST_Factor(exp);
         }
+        
         Error = $"Syntax error. Line {currentToken.Line} Invalid token {currentToken.Lexeme}";
         return null;
+    }
+
+    private AST_UnaryAssignFactor UnaryAssignFactor()
+    {
+        string op = currentToken.Lexeme;
+
+        if (currentToken.Type == TokenType.U_DECREMENT) Eat(TokenType.U_DECREMENT);
+        else if (currentToken.Type == TokenType.U_INCREMENT) Eat(TokenType.U_INCREMENT);
+        else Eat(TokenType.NOT); // (currentToken.Type == TokenType.NOT)
+
+        AST_Identifier id = new AST_Identifier(currentToken.Lexeme);
+        if (!Eat(TokenType.IDENTIFIER)) return null;
+        if (currentToken.Type == TokenType.DOT)
+        {
+            AST_PropertyAccess prop = PropertyAccess(id);
+            if (prop == null) return null;
+            return new AST_UnaryAssignFactor(op, prop);
+        }
+        Debug.Log("crea bien unary factor");
+        Debug.Log($"unary factor op '{op}'");
+        Debug.Log($"unary factor id '{id.ID}'");
+        return new AST_UnaryAssignFactor(op, id);
+    }
+
+    private AST_UnaryAssignFactor UnaryAssignFactor(AST_Identifier id)
+    {
+        if (currentToken.Type == TokenType.U_DECREMENT)
+        {
+            Eat(TokenType.U_DECREMENT);
+            return new AST_UnaryAssignFactor("--", id);
+        }
+        else // (currentToken.Type == TokenType.U_INCREMENT)
+        {
+            Eat(TokenType.U_INCREMENT);
+            return new AST_UnaryAssignFactor("++", id);
+        }
+    }
+
+    private AST_UnaryAssignFactor UnaryAssignFactor(AST_PropertyAccess prop)
+    {
+        if (currentToken.Type == TokenType.U_DECREMENT)
+        {
+            Eat(TokenType.U_DECREMENT);
+            return new AST_UnaryAssignFactor("--", prop);
+        }
+        else // (currentToken.Type == TokenType.U_INCREMENT)
+        {
+            Eat(TokenType.U_INCREMENT);
+            return new AST_UnaryAssignFactor("++", prop);
+        }
     }
 
     public AST_CardDefinition CardDefinition()
@@ -736,8 +861,9 @@ public class Parser
         {
             Eat(TokenType.IDENTIFIER);
             if(!Eat(TokenType.COLON)) return null;
-            Power = int.Parse(currentToken.Lexeme);
-            if(!Eat(TokenType.NUMBER)) return null;
+            string number = currentToken.Lexeme;
+            if (!Eat(TokenType.NUMBER)) return null;
+            Power = int.Parse(number);
             if(!Eat(TokenType.COMMA)) return null;
         }
         
@@ -878,20 +1004,24 @@ public class Parser
             if (!Eat(TokenType.COMMA)) return null;
         }
 
-        bool Single = false;
+        AST_Expression Single = new AST_Boolean(false);
         if (currentToken.Type == TokenType.SINGLE)
         {
             Eat(TokenType.SINGLE);
             if (!Eat(TokenType.COLON)) return null;
-            Single = bool.Parse(currentToken.Lexeme);
-            if(!Eat(TokenType.BOOLEAN)) return null;
+            Single = BooleanExpression();
+            if (Single == null) return null;
             if (!Eat(TokenType.COMMA)) return null;
         }
 
-        if (!Eat(TokenType.PREDICATE)) return null;
-        if (!Eat(TokenType.COLON)) return null;
-        AST_Predicate predicate = Predicate();
-        if (predicate == null) return null;
+        AST_Predicate predicate = null;
+        if (currentToken.Type == TokenType.PREDICATE)
+        { 
+            Eat(TokenType.PREDICATE);
+            if (!Eat(TokenType.COLON)) return null;
+            predicate = Predicate();
+            if (predicate == null) return null;
+        }
 
         //Debug.Log($"Line {currentToken.Line} : {currentToken.Type}");
         if (!Eat(TokenType.R_BRACE)) return null;

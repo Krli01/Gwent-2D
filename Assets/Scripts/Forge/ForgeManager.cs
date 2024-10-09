@@ -72,7 +72,7 @@ public class ForgeManager : MonoBehaviour
                 result = interpreter.Run((AST_Program)ast, Context.Instance);
                 if (result == null) ConsolePrint(interpreter.Error);
                 else ConsolePrint("Success. Save items before leaving editor");
-                Debug.Log("result " + result == null);
+                Debug.Log("result null" + (result == null));
                 Debug.Log(interpreter.Error);
             }
 
@@ -96,12 +96,12 @@ public class ForgeManager : MonoBehaviour
     {
         string[] cardTemplate = new string[] {
         "card {",
-        "    Type: ", 
-        "    Name: ", 
-        "    Faction: ",
-        "    Power: ",
-        "    Range: []",
-        "    Image:   // Escribe el directorio de la imagen. Recomendadas proporciones 1:1",
+        "    Type: \" \",", 
+        "    Name: \" \",", 
+        "    Faction: \" \",",
+        "    Power:  ,",
+        "    Range: [],",
+        "    //Image:   // Escribe el directorio de la imagen. Recomendadas proporciones 1:1",
         "    OnActivation: [",
         "        {",
         "            Effect: ",
@@ -140,9 +140,12 @@ public class ForgeManager : MonoBehaviour
         "    Params: {",
         "        ",
         "    },",
-        "    Action: (targets, context) =>",
+        "    Action: (targets, context) => {",
         "        for target in targets {",
-        "           // Escribir aquí la acción",
+        "           // Escribir aquí las acciones",
+        "        };",
+        "        while() {",
+        "           // Escribir aquí las acciones",
         "        };",
         "    }",
         "}",

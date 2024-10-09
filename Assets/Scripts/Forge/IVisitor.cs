@@ -5,7 +5,7 @@ public interface IVisitor
     Result Visit(AST node, GlobalScope globalScope, Dictionary<string, Result> LocalScope);
     Result Visit(AST_Action node, GlobalScope globalScope, Dictionary<string, Result> LocalScope);
     Result Visit(AST_ArithmeticExpression node, GlobalScope globalScope, Dictionary<string, Result> LocalScope);
-    Result Visit(AST_AssignStatement node, GlobalScope globalScope, Dictionary<string, Result> LocalScope);
+    Result Visit(AST_BinaryAssignStatement node, GlobalScope globalScope, Dictionary<string, Result> LocalScope);
     Result Visit(AST_Boolean node, GlobalScope globalScope, Dictionary<string, Result> LocalScope);
     Result Visit(AST_BooleanExpression node, GlobalScope globalScope, Dictionary<string, Result> LocalScope);
     Result Visit(AST_CardBody node, GlobalScope globalScope, Dictionary<string, Result> LocalScope);
@@ -32,5 +32,7 @@ public interface IVisitor
     Result Visit(AST_StatementBlock node, GlobalScope globalScope, Dictionary<string, Result> LocalScope);
     Result Visit(AST_String node, GlobalScope globalScope, Dictionary<string, Result> LocalScope);
     Result Visit(AST_Term node, GlobalScope globalScope, Dictionary<string, Result> LocalScope);
+    Result Visit(AST_UnaryAssignStatement node, GlobalScope globalScope, Dictionary<string, Result> LocalScope);
+    Result Visit(AST_UnaryAssignFactor node, GlobalScope globalScope, Dictionary<string, Result> LocalScope);
     Result Visit(AST_WhileLoop node, GlobalScope globalScope, Dictionary<string, Result> LocalScope);
 }

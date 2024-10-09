@@ -28,7 +28,7 @@ public class TokenDatabase : MonoBehaviour
         "while",
         "Number",
         "String",
-        "Boolean",
+        "Bool",
     };
     public readonly Dictionary<string, TokenType> Keywords = new Dictionary<string, TokenType>()
     {
@@ -36,7 +36,7 @@ public class TokenDatabase : MonoBehaviour
         //{"else", TokenType.ELSE},
         {"Number", TokenType.KW_NUMBER},
         {"String", TokenType.KW_STRING},
-        {"Boolean", TokenType.KW_BOOLEAN},
+        {"Bool", TokenType.KW_BOOLEAN},
         {"for", TokenType.FOR},
         {"in", TokenType.IN},
         {"while", TokenType.WHILE},

@@ -7,7 +7,7 @@ public class Graveyard : MonoBehaviour
 {
     //Functional
     public GameCard cardPrefab;
-    public List<Card> Cards = new List<Card>();
+    public Stack<Card> Cards = new Stack<Card>();
 
     //Visual
     public GameCard CardInPile1;
@@ -23,7 +23,8 @@ public class Graveyard : MonoBehaviour
         CardInPile3.gameObject.SetActive(false);
         CardInPile4.gameObject.SetActive(false);
     }
-    void Resurrect(Transform transform, int i)
+
+    /*void Resurrect(Transform transform, int i)
     {
         Card cardData = Cards[i];
 
@@ -31,12 +32,12 @@ public class Graveyard : MonoBehaviour
         newCard.SetOwner(TurnSystem.Instance.Active);
         newCard.Assign(cardData);
         newCard.transform.SetParent(transform, false);
-    }
+    }*/
 
     public void SendToGraveyard(GameCard card)
     {
         Card c = card.BaseCard;
-        Cards.Add(c);
+        Cards.Push(c);
         ArrangeGraveyard();
         //foreach (var x in Cards) Debug.Log($"{x.CardName} is in {TurnSystem.Active.Name}'s graveyard");
         top.Assign(c);

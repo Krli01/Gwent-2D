@@ -1,6 +1,3 @@
-
-//ESTRUCTURAS Q CONTIENEN KEYWORDS ELIMINADAS: EffectBody, ok CardBody, EffectInvocation, PostAction
-
 Program ::= (Effect | Card)*
 
 Effect ::= "effect" "{" EffectBody "}"
@@ -21,7 +18,9 @@ ForLoop ::= "for" IDENTIFIER "in" (IDENTIFIER |PropertyAccess) StatementBlock
 
 WhileLoop ::= "while" "(" Expression ")" StatementBlock
 
-AssignStatement ::= (IDENTIFIER | PropertyAccess) ("=" | "+=" | "-=") (Expression | FunctionCall)
+BinaryAssignStatement ::= (IDENTIFIER | PropertyAccess) ("=" | "+=" | "-=") (Expression | FunctionCall)
+
+UnaryAssignStatement ::= ["--" | "!" | "++"] (IDENTIFIER | PropertyAccess)
 
 FunctionCall ::= PropertyAccess "(" [Expression | Predicate] ")"
 
@@ -58,17 +57,17 @@ PostAction ::= "PostAction:"
                [PostAction]
                "}"
 
-Expression ::= BooleanExpression
+Expression ::= BooleanExpression | ComparisonExpression | ArithmeticExpression | Term | Factor 
 
 BooleanExpression ::= ComparisonExpression (("&&" | "||") ComparisonExpression)*
 
-ComparisonExpression ::= ArithmeticExpression (("<" | ">" | "==" | ">=" | "<=") ArithmeticExpression)*
+ComparisonExpression ::= ArithmeticExpression  (("<" | ">" | "==" | ">=" | "<=") ArithmeticExpression)*
 
-ArithmeticExpression ::= Term (("+" | "-") Term)*
+ArithmeticExpression ::= (Term | UnaryAssignStatement) (("+" | "-") Term)*
 
 Term ::= Factor (("*" | "/" | "^" | @ | @@) Factor)*
 
-Factor ::= [("--" | "!" | "++")] (NUMBER | STRING | BOOLEAN | IDENTIFIER | "(" Expression ")" | PropertyAccess)
+Factor ::= NUMBER | STRING | BOOLEAN | IDENTIFIER |  PropertyAccess | UnaryAssignStatement | "(" Expression ")"
 
 PropertyAccess ::= IDENTIFIER ("." IDENTIFIER)+  
 STRING ::= '"' [^"]* '"'

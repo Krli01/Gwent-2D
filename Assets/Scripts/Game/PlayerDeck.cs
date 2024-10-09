@@ -1,3 +1,4 @@
+
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -23,7 +24,7 @@ public class PlayerDeck : MonoBehaviour
 
     public void Create(string faction)
     {
-        int x;
+        /*int x;
         int index;
         if (Cards == null) Cards = new Stack<Card>();
         while(Cards.Count < 30)
@@ -53,7 +54,10 @@ public class PlayerDeck : MonoBehaviour
                     //Debug.Log($"{nextCard.CardName}: pushed");
                 }
             }
-        }
+        }*/
+
+        if (Cards == null) Cards = new Stack<Card>();
+        foreach (Card c in CardDatabase.AvailableDecks[faction]) Cards.Push(c);
     }
 
     public IEnumerator DrawCards(Player owner, int n)
